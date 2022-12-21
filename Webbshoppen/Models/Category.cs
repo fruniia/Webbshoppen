@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Webbshoppen.Models
 {
-    internal class Category
+    public class Category
     {
+        public int? Id { get; set; }
+        public string? Name { get; set; }
+        public ICollection<Product>? Products { get; set; }
+        public ICollection<Supplier>? Suppliers { get; set; }
     }
 }

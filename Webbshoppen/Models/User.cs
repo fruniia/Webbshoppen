@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Webbshoppen.Models
 {
-    internal class User
+    public class User
     {
+        public int Id { get; set; }
+        public string EMail { get; set; } //TODO: Unique i DB-context
+        public string Password { get; set; }
+        public int CustomerId { get; set; }
+        public virtual Customer? Customer { get; set; }
     }
 }
