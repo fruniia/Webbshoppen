@@ -9,9 +9,12 @@ namespace Webbshoppen.Models
     public class User
     {
         public int Id { get; set; }
-        public string EMail { get; set; } //TODO: Unique i DB-context
+        public string Name { get; set; }
+        public int BirthYear { get; set; }
+        public int BirthMonth { get; set; }
+        public int BirthDay { get; set; }
+        public string Email { get; set; } //TODO: Unique i DB-context
         public string Password { get; set; }
-        public int CustomerId { get; set; }
-        public virtual Customer? Customer { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }

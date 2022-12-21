@@ -17,14 +17,12 @@ namespace Webbshoppen.Models
         public int OrderDate { get; set; }
         public float TotalPrice { get; set; }
         public float VAT { get; set; }
-        public int CardId { get; set; }
-        public virtual CardPayment? Card { get; set; }
-        public int InvoiceId { get; set; }
-        public virtual InvoicePayment? Invoice { get; set; }
-        public int CustomerId { get; set; }
-        public virtual Customer? Customer { get; set; }
+        public int UserId { get; set; }
+        public virtual User? User { get; set; }
 
-        
+        public ICollection<CardPayment> CardPayments { get; set; }
+
+        public ICollection<InvoicePayment> InvoicePayments { get; set; }
 
     }
 }
