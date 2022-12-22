@@ -14,20 +14,16 @@ namespace Webbshoppen.Models
             optionsBuilder.UseSqlServer("Server=tcp:mydbmohammad.database.windows.net,1433;Initial Catalog=Webbshop;Persist Security Info=False;User ID=mohammaddb;Password=###mohamedalzuabi123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
         }
 
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Order> Orders { get; set; }
-
+        public DbSet<CardPayment> CardPayments { get; set; } 
         public DbSet<Category> Categories { get; set; }
-
-        public DbSet<User> Users { get; set; }
         public DbSet<City> Cities { get; set; }
-
+        public DbSet<Country> Countries  { get; set; }
+        public DbSet<InvoicePayment> InvoicePayments { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Shipping> Shippings { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
-
-        public virtual DbSet<CardPayment> CardPayments { get; set; } 
-
-        public virtual DbSet<InvoicePayment> InvoicePayments { get; set; }
-
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

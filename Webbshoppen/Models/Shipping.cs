@@ -18,8 +18,6 @@ namespace Webbshoppen.Models
         public float ShippingPrice { get; set; }
         public int CityId { get; set; }
         public virtual City? City { get; set; }
-        public int UserId { get; set; }
-        public virtual User? User { get; set; }
         public int OrderId { get; set; }
         public virtual Order? Order { get; set; }
     }

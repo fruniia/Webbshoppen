@@ -22,7 +22,7 @@ namespace Webbshoppen.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Country",
+                name: "Countries",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -31,7 +31,7 @@ namespace Webbshoppen.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Country", x => x.Id);
+                    table.PrimaryKey("PK_Countries", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -48,6 +48,24 @@ namespace Webbshoppen.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BirthYear = table.Column<int>(type: "int", nullable: false),
+                    BirthMonth = table.Column<int>(type: "int", nullable: false),
+                    BirthDay = table.Column<int>(type: "int", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Cities",
                 columns: table => new
                 {
@@ -60,9 +78,9 @@ namespace Webbshoppen.Migrations
                 {
                     table.PrimaryKey("PK_Cities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Cities_Country_CountryId",
+                        name: "FK_Cities_Countries_CountryId",
                         column: x => x.CountryId,
-                        principalTable: "Country",
+                        principalTable: "Countries",
                         principalColumn: "Id");
                 });
 
@@ -115,30 +133,6 @@ namespace Webbshoppen.Migrations
                         name: "FK_Products_Suppliers_SupplierId",
                         column: x => x.SupplierId,
                         principalTable: "Suppliers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BirthYear = table.Column<int>(type: "int", nullable: false),
-                    BirthMonth = table.Column<int>(type: "int", nullable: false),
-                    BirthDay = table.Column<int>(type: "int", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CityId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Users_Cities_CityId",
-                        column: x => x.CityId,
-                        principalTable: "Cities",
                         principalColumn: "Id");
                 });
 
@@ -208,6 +202,38 @@ namespace Webbshoppen.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Shippings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PostalCode = table.Column<int>(type: "int", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HomeDelivery = table.Column<bool>(type: "bit", nullable: false),
+                    ShippingPrice = table.Column<float>(type: "real", nullable: false),
+                    CityId = table.Column<int>(type: "int", nullable: false),
+                    OrderId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Shippings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Shippings_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Shippings_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_CardPayments_OrderId",
                 table: "CardPayments",
@@ -244,9 +270,14 @@ namespace Webbshoppen.Migrations
                 column: "SupplierId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_CityId",
-                table: "Users",
+                name: "IX_Shippings_CityId",
+                table: "Shippings",
                 column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Shippings_OrderId",
+                table: "Shippings",
+                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
@@ -270,7 +301,7 @@ namespace Webbshoppen.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "Shippings");
 
             migrationBuilder.DropTable(
                 name: "Categories");
@@ -279,13 +310,16 @@ namespace Webbshoppen.Migrations
                 name: "Suppliers");
 
             migrationBuilder.DropTable(
-                name: "Users");
-
-            migrationBuilder.DropTable(
                 name: "Cities");
 
             migrationBuilder.DropTable(
-                name: "Country");
+                name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "Countries");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

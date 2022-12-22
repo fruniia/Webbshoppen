@@ -19,7 +19,8 @@ namespace Webbshoppen.Models
         public float VAT { get; set; }
         public int UserId { get; set; }
         public virtual User? User { get; set; }
-
+        
+        public ICollection<Shipping> Shippings { get; set; }
         public ICollection<CardPayment> CardPayments { get; set; }
 
         public ICollection<InvoicePayment> InvoicePayments { get; set; }

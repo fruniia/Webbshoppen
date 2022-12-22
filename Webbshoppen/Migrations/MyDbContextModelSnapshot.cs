@@ -120,7 +120,7 @@ namespace Webbshoppen.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Country");
+                    b.ToTable("Countries");
                 });
 
             modelBuilder.Entity("Webbshoppen.Models.InvoicePayment", b =>
@@ -206,6 +206,49 @@ namespace Webbshoppen.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("Webbshoppen.Models.Shipping", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("HomeDelivery")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PostalCode")
+                        .HasColumnType("int");
+
+                    b.Property<float>("ShippingPrice")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Shippings");
+                });
+
             modelBuilder.Entity("Webbshoppen.Models.Supplier", b =>
                 {
                     b.Property<int>("Id")
@@ -239,9 +282,6 @@ namespace Webbshoppen.Migrations
                     b.Property<int>("BirthYear")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CityId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -255,8 +295,6 @@ namespace Webbshoppen.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CityId");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -336,11 +374,23 @@ namespace Webbshoppen.Migrations
                     b.Navigation("Supplier");
                 });
 
-            modelBuilder.Entity("Webbshoppen.Models.User", b =>
+            modelBuilder.Entity("Webbshoppen.Models.Shipping", b =>
                 {
-                    b.HasOne("Webbshoppen.Models.City", null)
-                        .WithMany("Users")
-                        .HasForeignKey("CityId");
+                    b.HasOne("Webbshoppen.Models.City", "City")
+                        .WithMany("Shippings")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Webbshoppen.Models.Order", "Order")
+                        .WithMany("Shippings")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Webbshoppen.Models.Category", b =>
@@ -350,7 +400,7 @@ namespace Webbshoppen.Migrations
 
             modelBuilder.Entity("Webbshoppen.Models.City", b =>
                 {
-                    b.Navigation("Users");
+                    b.Navigation("Shippings");
                 });
 
             modelBuilder.Entity("Webbshoppen.Models.Country", b =>
@@ -363,6 +413,8 @@ namespace Webbshoppen.Migrations
                     b.Navigation("CardPayments");
 
                     b.Navigation("InvoicePayments");
+
+                    b.Navigation("Shippings");
                 });
 
             modelBuilder.Entity("Webbshoppen.Models.Supplier", b =>
