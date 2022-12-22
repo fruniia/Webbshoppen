@@ -12,7 +12,6 @@ namespace Webbshoppen.Models
     public class Order
     {
         public int Id { get; set; }
-
         public int Quantity { get; set; }
         public int OrderDate { get; set; }
         public float TotalPrice { get; set; }
@@ -20,10 +19,11 @@ namespace Webbshoppen.Models
         public int UserId { get; set; }
         public virtual User? User { get; set; }
         
-        public ICollection<Shipping> Shippings { get; set; }
-        public ICollection<CardPayment> CardPayments { get; set; }
+        public ICollection<Product>? Products { get; set; }
+        public ICollection<Shipping>? Shippings { get; set; }
+        public ICollection<CardPayment>? CardPayments { get; set; }
 
-        public ICollection<InvoicePayment> InvoicePayments { get; set; }
+        public ICollection<InvoicePayment>? InvoicePayments { get; set; }
 
     }
 }

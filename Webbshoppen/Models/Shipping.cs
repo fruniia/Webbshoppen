@@ -17,8 +17,7 @@ namespace Webbshoppen.Models
         public bool HomeDelivery { get; set; } //1 = Home, 0 = ShippingAgent
         public float ShippingPrice { get; set; }
         public int CityId { get; set; }
-        public virtual City? City { get; set; }
-        public int OrderId { get; set; }
-        public virtual Order? Order { get; set; }
+        public virtual  City? City { get; set; }
+        public ICollection<Order>? Orders { get; set; }
     }
 }

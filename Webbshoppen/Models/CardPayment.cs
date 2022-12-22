@@ -16,7 +16,6 @@ namespace Webbshoppen.Models
         public int Month { get; set; }
         public int Year { get; set; }
         public int CvvCode { get; set; }
-        public int OrderId { get; set; }
-        public virtual Order? Order { get; set; }
+        public ICollection<Order>? Orders { get; set; }
     }
 }

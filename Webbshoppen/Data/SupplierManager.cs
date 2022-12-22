@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Webbshoppen.Data
 {
     public class SupplierManager
-    {
+    {  
         public void AddSuppliers()
         {
             using (var context = new MyDbContext())
@@ -23,7 +23,7 @@ namespace Webbshoppen.Data
                     new Supplier { Name = "Helly Hansen" },
                     new Supplier { Name = "Pelle Petersson" }
                     );
-                //context.SaveChanges();
+                context.SaveChanges();
             }
         }
     }

@@ -9,8 +9,6 @@ namespace Webbshoppen.Models
     public class InvoicePayment
     {
         public int Id { get; set; }
-
-        public int OrderId { get; set; }
-        public virtual Order? Order { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }

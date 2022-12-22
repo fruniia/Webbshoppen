@@ -10,6 +10,7 @@ namespace Webbshoppen.Data
 {
     public class CategoryManager
     {
+
         public void AddCategories()
         {
             using (var context = new MyDbContext())
@@ -19,8 +20,9 @@ namespace Webbshoppen.Data
                     new Category { Name = "Byxor" },
                     new Category { Name = "Jackor" }
                     );
-                //context.SaveChanges();
+                context.SaveChanges();
             }
         }
+
     }
 }
