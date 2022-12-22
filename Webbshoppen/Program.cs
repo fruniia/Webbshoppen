@@ -1,13 +1,14 @@
-﻿namespace Webbshoppen
+﻿using Webbshoppen.Data;
+
+namespace Webbshoppen
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
-            Console.WriteLine("Hej Världen!");
-
-
+            SupplierManager sm = new();
+            sm.AddSuppliers();
         }
+
     }
 }
