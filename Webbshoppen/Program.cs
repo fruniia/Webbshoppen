@@ -6,8 +6,8 @@ namespace Webbshoppen
     {
         static void Main(string[] args)
         {
-            ProductManager pm = new();
-            pm.AddProducts();
+            SupplierManager sm = new();
+            sm.AddSuppliers();
         }
 
     }
