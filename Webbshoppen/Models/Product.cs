@@ -18,5 +18,6 @@ namespace Webbshoppen.Models
         public virtual Category? Category { get; set; }
         public ICollection<Order> Orders { get; set; }
         public ICollection<Supplier> Suppliers { get; set; }
+        public ICollection<Cart> Carts { get; set; }
     }
 }

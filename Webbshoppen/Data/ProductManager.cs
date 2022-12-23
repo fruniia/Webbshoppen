@@ -156,7 +156,7 @@ namespace Webbshoppen.Data
                     }
 
                     );
-                context.SaveChanges();
+               // context.SaveChanges();
             }
         }
     }

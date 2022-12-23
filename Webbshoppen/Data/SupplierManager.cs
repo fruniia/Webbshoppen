@@ -23,7 +23,7 @@ namespace Webbshoppen.Data
                     new Supplier { Name = "Helly Hansen" },
                     new Supplier { Name = "Pelle Petersson" }
                     );
-                context.SaveChanges();
+               // context.SaveChanges();
             }
         }
     }

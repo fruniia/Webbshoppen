@@ -20,7 +20,7 @@ namespace Webbshoppen.Data
                     new Category { Name = "Byxor" },
                     new Category { Name = "Jackor" }
                     );
-                context.SaveChanges();
+                //context.SaveChanges();
             }
         }
 

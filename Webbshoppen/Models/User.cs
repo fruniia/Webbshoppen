@@ -16,5 +16,6 @@ namespace Webbshoppen.Models
         public string Email { get; set; } //TODO: Unique i DB-context
         public string Password { get; set; }
         public ICollection<Order>? Orders { get; set; }
+        public ICollection<Cart> Carts { get; set; }
     }
 }
