@@ -55,7 +55,9 @@ namespace Webbshoppen.Pages
 
                     break;
                 case 5:
-
+                    ShowCategories();
+                    break;
+                case 6:
                     break;
             }
         }
