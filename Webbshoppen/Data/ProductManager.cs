@@ -24,7 +24,8 @@ namespace Webbshoppen.Data
                         Selected = false,
                         Description = $"Herr, L, Svart",
                         CategoryId = 1,
-                        UnitsInStock = 4
+                        UnitsInStock = 4,
+                        SupplierId = 2
                     },
                     new Product
                     {
@@ -33,7 +34,8 @@ namespace Webbshoppen.Data
                         Selected = false,
                         Description = $"Dam, M, Rosa",
                         CategoryId = 1,
-                        UnitsInStock = 5
+                        UnitsInStock = 5,
+                        SupplierId = 3
                     },
                     new Product
                     {
@@ -42,7 +44,8 @@ namespace Webbshoppen.Data
                         Selected = false,
                         Description = $"Herr, XL, Grön",
                         CategoryId = 1,
-                        UnitsInStock = 9
+                        UnitsInStock = 9,
+                        SupplierId = 1
                     },
                     new Product
                     {
@@ -51,7 +54,8 @@ namespace Webbshoppen.Data
                         Selected = true,
                         Description = $"Dam, L, Röd",
                         CategoryId = 1,
-                        UnitsInStock = 12
+                        UnitsInStock = 12,
+                        SupplierId = 1
                     },
                     new Product
                     {
@@ -60,7 +64,8 @@ namespace Webbshoppen.Data
                         Selected = false,
                         Description = $"Dam, S, Vit",
                         CategoryId = 1,
-                        UnitsInStock = 4
+                        UnitsInStock = 4,
+                        SupplierId = 2
                     },
                     // 5 byxor
                     new Product
@@ -70,7 +75,8 @@ namespace Webbshoppen.Data
                         Selected = false,
                         Description = $"Herr, L, Gul",
                         CategoryId = 2,
-                        UnitsInStock = 4
+                        UnitsInStock = 4,
+                        SupplierId = 5
                     },
                     new Product
                     {
@@ -79,7 +85,8 @@ namespace Webbshoppen.Data
                         Selected = false,
                         Description = $"Dam, M, Svart",
                         CategoryId = 2,
-                        UnitsInStock = 4
+                        UnitsInStock = 4,
+                        SupplierId = 7
                     },
                     new Product
                     {
@@ -88,7 +95,8 @@ namespace Webbshoppen.Data
                         Selected = false,
                         Description = $"Herr, XL, Blå",
                         CategoryId = 2,
-                        UnitsInStock = 4
+                        UnitsInStock = 4,
+                        SupplierId = 6
                     },
                     new Product
                     {
@@ -97,7 +105,8 @@ namespace Webbshoppen.Data
                         Selected = true,
                         Description = $"Dam, L, Lila",
                         CategoryId = 2,
-                        UnitsInStock = 4
+                        UnitsInStock = 4,
+                        SupplierId = 3
                     },
                     new Product
                     {
@@ -106,7 +115,8 @@ namespace Webbshoppen.Data
                         Selected = false,
                         Description = $"Herr, S, Grön",
                         CategoryId = 2,
-                        UnitsInStock = 4
+                        UnitsInStock = 4,
+                        SupplierId = 4
                     },
                     // 5 jackor
                     new Product
@@ -116,7 +126,8 @@ namespace Webbshoppen.Data
                         Selected = true,
                         Description = $"Dam, M, Grå",
                         CategoryId = 3,
-                        UnitsInStock = 4
+                        UnitsInStock = 4,
+                        SupplierId = 4
                     },
                     new Product
                     {
@@ -125,7 +136,8 @@ namespace Webbshoppen.Data
                         Selected = false,
                         Description = $"Herr, M, Blå",
                         CategoryId = 3,
-                        UnitsInStock = 4
+                        UnitsInStock = 4,
+                        SupplierId = 6
                     },
                     new Product
                     {
@@ -134,7 +146,8 @@ namespace Webbshoppen.Data
                         Selected = false,
                         Description = $"Dam, L, Svart",
                         CategoryId = 3,
-                        UnitsInStock = 4
+                        UnitsInStock = 4,
+                        SupplierId = 6
                     },
                     new Product
                     {
@@ -143,7 +156,8 @@ namespace Webbshoppen.Data
                         Selected = false,
                         Description = $"Herr, M, Grå",
                         CategoryId = 3,
-                        UnitsInStock = 4
+                        UnitsInStock = 4,
+                        SupplierId = 3
                     },
                     new Product
                     {
@@ -152,12 +166,35 @@ namespace Webbshoppen.Data
                         Selected = false,
                         Description = $"Herr, S, Grön",
                         CategoryId = 3,
-                        UnitsInStock = 4
+                        UnitsInStock = 4,
+                        SupplierId = 4
                     }
 
                     );
                // context.SaveChanges();
             }
         }
+
+        //public IQueryable<Product> GetProduct()
+        //{
+        //    using (var db = new MyDbContext())
+        //    {
+        //        var product = (from p in db.Products
+        //                      join c in db.Categories on p.CategoryId equals c.Id
+        //                      join s in db.Suppliers on p.SupplierId equals s.Id
+        //                      select new
+        //                      {
+        //                          Selected = p.Selected,
+        //                          Name = p.Name,
+        //                          UnitPrice = p.UnitPrice,
+        //                          Description = p.Description,
+        //                          UnitsInStock = p.UnitsInStock,
+        //                          CategoryName = c.Name,
+        //                          SupplierName = s.Name
+
+        //                      }).AsQueryable();
+        //        return product;
+        //    }
+        //}
     }
 }

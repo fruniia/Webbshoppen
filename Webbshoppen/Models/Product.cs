@@ -15,9 +15,10 @@ namespace Webbshoppen.Models
         public string? Description { get; set; }
         public int UnitsInStock { get; set; }
         public int? CategoryId { get; set; }
+        public int? SupplierId { get; set; }
         public virtual Category? Category { get; set; }
         public ICollection<Order> Orders { get; set; }
-        public ICollection<Supplier> Suppliers { get; set; }
+        public virtual Supplier? Supplier { get; set; }
         public ICollection<Cart> Carts { get; set; }
     }
 }

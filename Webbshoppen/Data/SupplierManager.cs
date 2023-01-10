@@ -26,5 +26,17 @@ namespace Webbshoppen.Data
                // context.SaveChanges();
             }
         }
+
+        public void ShowSuppliers()
+        {
+            using (var db = new MyDbContext())
+            {
+              
+                foreach(var supplier in db.Suppliers.Select(x=> x))
+                {
+                    Console.WriteLine($"{supplier.Id} {supplier.Name}");
+                }  
+            }
+        }
     }
 }
