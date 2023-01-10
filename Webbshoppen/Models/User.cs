@@ -13,7 +13,7 @@ namespace Webbshoppen.Models
         public int BirthYear { get; set; }
         public int BirthMonth { get; set; }
         public int BirthDay { get; set; }
-        public string Email { get; set; } //TODO: Unique i DB-context
+        public string Email { get; set; } 
         public string Password { get; set; }
         public ICollection<Order>? Orders { get; set; }
         public ICollection<Cart> Carts { get; set; }

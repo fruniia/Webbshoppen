@@ -8,5 +8,10 @@ namespace Webbshoppen.Pages
 {
     internal class OrderPage
     {
+        //Quantity
+        //Orderdate
+        //Totalprice
+        //VAT
+        //UserId
     }
 }

@@ -8,5 +8,11 @@ namespace Webbshoppen.Pages
 {
     internal class CheckOutPage
     {
+        //Fraktvy
+            //Namn, adress, , postnummer, stad, land, telefon, homedelivery, shippingprice
+        //Betalavy
+            //Produkter visas med pris
+            //Pris med frakt, samt moms, 
+            //Val av betalning 
     }
 }

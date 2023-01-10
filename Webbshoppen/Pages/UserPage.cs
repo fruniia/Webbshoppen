@@ -8,5 +8,8 @@ namespace Webbshoppen.Pages
 {
     internal class UserPage
     {
+        //TODO: Ändra uppgift om kunden
+        //TODO: Beställningshistorik
+        
     }
 }
