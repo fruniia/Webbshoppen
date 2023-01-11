@@ -16,8 +16,11 @@ namespace Webbshoppen.Pages
             Visa_alla_produkter,
             Lägg_till_produkt,
             Ta_bort_produkt,
-            Ändra_produkt,
-            Utvalda_produkt,
+            Ändra_namn_på_produkt,
+            Ändra_pris_på_produkt,
+            Ändra_lagersaldo_på_produkt,
+            Ändra_utvalda_produkter,
+            Ändra_beskrivning_på_produkt,
             Visa_alla_kategorier,
             Lägg_till_kategori,
             Ta_bort_kategori,
@@ -46,7 +49,7 @@ namespace Webbshoppen.Pages
                     AddProduct();
                     break;
                 case 2:
-
+                    RemoveProduct();
                     break;
                 case 3:
 
@@ -58,6 +61,16 @@ namespace Webbshoppen.Pages
                     ShowCategories();
                     break;
                 case 6:
+                    break;
+                case 7:
+                    break;
+                case 8:
+                    break;
+                case 9:
+                    break;
+                case 10:
+                    break;
+                case 11:
                     break;
             }
         }
@@ -130,17 +143,61 @@ namespace Webbshoppen.Pages
         }
         public void RemoveProduct()
         {
-            //TODO: Ta bort produkter
+            ShowProducts();
+            using (var db = new MyDbContext())
+            {
+                var productId = ConsoleUtils.GetIntFromUser("Ange id på produkten du vill ta bort: ");
+                var deleteProduct = (from p in db.Products
+                                  where p.Id == (productId)
+                                  select p).SingleOrDefault();
+                if (deleteProduct != null)
+                {
+                    var productAnswer = ConsoleUtils.GetStringFromUser($"Är du säker på att du vill ta bort? j/n ");
+                    if (productAnswer.Trim().ToLower().StartsWith("j"))
+                    {
+                        db.Products.Remove(deleteProduct);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Produkten plockades inte bort");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Id't du angav finns inte.");
+                }
+            }
         }
 
-        public void AlterProduct()
+        public void AlterProductName()
         {
             //TODO: Ändra produkter
+            //Ta reda på produktens Id
+            //Vilken kolumn vill admin ändra
+            //Name,Unitprice, UnitsinStock, Selected, Description
+            ShowProducts();
+            using(var db = new MyDbContext())
+            {
+               // var productId = ConsoleUtils.GetStringFromUser("Ange Id på produkten du vill ändra");
+                
+
+
+            }
 
         }
-        public void SelectedProduct()
+        public void AlterProductPrice() 
+        { 
+        }
+        public void AlterUnitsInStock() 
+        { 
+        }
+        public void AlterSelectedProduct()
         {
             //TODO: Utvalda produkter på första startsidan
+        }
+        public void AlterProductDescription() 
+        {
         }
 
         public void ShowCategories()
