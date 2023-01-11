@@ -177,25 +177,20 @@ namespace Webbshoppen.Pages
             //Vilken kolumn vill admin ändra
             //Name,Unitprice, UnitsinStock, Selected, Description
             ShowProducts();
-            using(var db = new MyDbContext())
+            using (var db = new MyDbContext())
             {
                 var productId = ConsoleUtils.GetIntFromUser("Ange Id på produkten du vill ändra");
                 var alterProductName = (from p in db.Products
-                                     where p.Id == (productId)
-                                     select p).SingleOrDefault();
+                                        where p.Id == (productId)
+                                        select p).SingleOrDefault();
                 if (alterProductName != null)
                 {
-                    var productName = ConsoleUtils.GetStringFromUser($"Ange den nya namnet: ");
-                    if (productName.Trim().ToLower().StartsWith("j"))
-                    {
-                        alterProductName.Name = 
-                        db.SaveChanges();
-                    }
-
-
+                    var productName = ConsoleUtils.GetStringFromUser($"Ange det nya namnet på produkten: ");
+                    alterProductName.Name = productName;
+                    db.SaveChanges();
 
                 }
-
+            }
         }
         public void AlterProductPrice() 
         { 
