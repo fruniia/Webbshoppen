@@ -12,8 +12,8 @@ using Webbshoppen.Models;
 namespace Webbshoppen.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20221222141443_FirstInit")]
-    partial class FirstInit
+    [Migration("20230111114632_Frist")]
+    partial class Frist
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -84,21 +84,6 @@ namespace Webbshoppen.Migrations
                     b.ToTable("OrderShipping");
                 });
 
-            modelBuilder.Entity("ProductSupplier", b =>
-                {
-                    b.Property<int>("ProductsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SuppliersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductsId", "SuppliersId");
-
-                    b.HasIndex("SuppliersId");
-
-                    b.ToTable("ProductSupplier");
-                });
-
             modelBuilder.Entity("Webbshoppen.Models.CardPayment", b =>
                 {
                     b.Property<int>("Id")
@@ -125,6 +110,38 @@ namespace Webbshoppen.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CardPayments");
+                });
+
+            modelBuilder.Entity("Webbshoppen.Models.Cart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<float>("TotalPrice")
+                        .HasColumnType("real");
+
+                    b.Property<float>("UnitPrice")
+                        .HasColumnType("real");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Cart");
                 });
 
             modelBuilder.Entity("Webbshoppen.Models.Category", b =>
@@ -243,12 +260,20 @@ namespace Webbshoppen.Migrations
                     b.Property<bool?>("Selected")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
+
                     b.Property<float?>("UnitPrice")
                         .HasColumnType("real");
+
+                    b.Property<int>("UnitsInStock")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("SupplierId");
 
                     b.ToTable("Products");
                 });
@@ -404,19 +429,23 @@ namespace Webbshoppen.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProductSupplier", b =>
+            modelBuilder.Entity("Webbshoppen.Models.Cart", b =>
                 {
-                    b.HasOne("Webbshoppen.Models.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
+                    b.HasOne("Webbshoppen.Models.Product", "Product")
+                        .WithMany("Carts")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Webbshoppen.Models.Supplier", null)
-                        .WithMany()
-                        .HasForeignKey("SuppliersId")
+                    b.HasOne("Webbshoppen.Models.User", "User")
+                        .WithMany("Carts")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Webbshoppen.Models.City", b =>
@@ -445,7 +474,13 @@ namespace Webbshoppen.Migrations
                         .WithMany("Products")
                         .HasForeignKey("CategoryId");
 
+                    b.HasOne("Webbshoppen.Models.Supplier", "Supplier")
+                        .WithMany("Products")
+                        .HasForeignKey("SupplierId");
+
                     b.Navigation("Category");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("Webbshoppen.Models.Shipping", b =>
@@ -474,8 +509,20 @@ namespace Webbshoppen.Migrations
                     b.Navigation("Cities");
                 });
 
+            modelBuilder.Entity("Webbshoppen.Models.Product", b =>
+                {
+                    b.Navigation("Carts");
+                });
+
+            modelBuilder.Entity("Webbshoppen.Models.Supplier", b =>
+                {
+                    b.Navigation("Products");
+                });
+
             modelBuilder.Entity("Webbshoppen.Models.User", b =>
                 {
+                    b.Navigation("Carts");
+
                     b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618

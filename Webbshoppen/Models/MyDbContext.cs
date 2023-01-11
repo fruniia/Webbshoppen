@@ -11,7 +11,7 @@ namespace Webbshoppen.Models
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=tcp:mydbmohammad.database.windows.net,1433;Initial Catalog=Webbshop;Persist Security Info=False;User ID=mohammaddb;Password=###mohamedalzuabi123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+            optionsBuilder.UseSqlServer("Server=tcp:mohammad2.database.windows.net,1433;Initial Catalog=Webbshopp;Persist Security Info=False;User ID=mohammad;Password=alzuabi1#;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
         }
 
         public DbSet<CardPayment> CardPayments { get; set; } 
