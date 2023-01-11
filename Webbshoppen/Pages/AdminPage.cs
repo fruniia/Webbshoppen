@@ -24,7 +24,8 @@ namespace Webbshoppen.Pages
             Visa_alla_kategorier,
             Lägg_till_kategori,
             Ta_bort_kategori,
-            Tillbaka_till_startsida
+            Tillbaka_till_startsida,
+            Exit
         }
 
         public AdminPage()
@@ -34,51 +35,54 @@ namespace Webbshoppen.Pages
 
         public void Run()
         {
-            string prompt = "Vad vill du administrera?";
-            string[] options = Enum.GetNames(typeof(AdminMenu));
-
-            Menu adminMenu = new Menu(prompt, options);
-            int selectedIndex = adminMenu.Run();
-
-            switch (selectedIndex)
+            bool running = true;
+            while (running)
             {
-                case 0:
-                    ShowProducts();
-                    break;
-                case 1:
-                    AddProduct();
-                    break;
-                case 2:
-                    RemoveProduct();
-                    break;
-                case 3:
+                string prompt = "Vad vill du administrera?";
+                string[] options = Enum.GetNames(typeof(AdminMenu));
 
-                    break;
-                case 4:
-
-                    break;
-                case 5:
-                    ShowCategories();
-                    break;
-                case 6:
-                    break;
-                case 7:
-                    break;
-                case 8:
-                    break;
-                case 9:
-                    break;
-                case 10:
-                    break;
-                case 11:
-                    break;
+                Menu adminMenu = new Menu(prompt, options);
+                int selectedIndex = adminMenu.Run();
+                switch (selectedIndex)
+                {
+                    case 0:
+                        ShowProducts();
+                        break;
+                    case 1:
+                        AddProduct();
+                        break;
+                    case 2:
+                        RemoveProduct();
+                        break;
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                        AlterProduct(selectedIndex);
+                        break;
+                    case 8:
+                        break;
+                    case 9:
+                        break;
+                    case 10:
+                        break;
+                    case 11:
+                        Run();
+                        break;
+                    case 12:
+                        running = false;
+                        Environment.Exit(0);
+                        break;
+                }
+                Console.ReadKey();
             }
         }
-            
+
         public void AddProduct()
         {
-            
-            Console.WriteLine("kategorier");
+
+            Console.WriteLine("Kategorier");
             ShowCategories();
             Console.WriteLine("==================");
             Console.WriteLine("Leverantörer");
@@ -92,7 +96,7 @@ namespace Webbshoppen.Pages
             var categoryId = ConsoleUtils.GetIntFromUser("Ange Kategori-id: ");
             var supplierId = ConsoleUtils.GetIntFromUser("Ange leverantör-id: ");
             var selectedAsInt = ConsoleUtils.GetIntFromUser("Ange 1 om utvald annars 0: ");
-            var selected = (selectedAsInt == 1 ? true : false); 
+            var selected = (selectedAsInt == 1 ? true : false);
 
 
             using (var db = new MyDbContext())
@@ -107,22 +111,22 @@ namespace Webbshoppen.Pages
                     CategoryId = categoryId,
                     SupplierId = supplierId
                 };
-                db.Add(product);  
+                db.Add(product);
                 db.SaveChanges();
             }
         }
 
-        
+
         public void ShowProducts()
         {
-
-            using(var db = new MyDbContext())
+            using (var db = new MyDbContext())
             {
                 var product = from p in db.Products
                               join c in db.Categories on p.CategoryId equals c.Id
                               join s in db.Suppliers on p.SupplierId equals s.Id
-                              select new 
+                              select new
                               {
+                                  Id = p.Id,
                                   Selected = p.Selected,
                                   Name = p.Name,
                                   UnitPrice = p.UnitPrice,
@@ -133,13 +137,11 @@ namespace Webbshoppen.Pages
 
                               };
 
-                foreach(var l in product)
+                foreach (var l in product)
                 {
-                    Console.WriteLine($"{(l.Selected == true ? "Utvald" : " ")}\t {l.Name} {l.UnitPrice} {l.Description} {l.UnitsInStock} {l.CategoryName} {l.SupplierName}");
+                    Console.WriteLine($"{(l.Selected == true ? "Utvald" : " ")}\t {l.Id} {l.Name} {l.UnitPrice} {l.Description} {l.UnitsInStock} {l.CategoryName} {l.SupplierName}");
                 }
-
             }
-
         }
         public void RemoveProduct()
         {
@@ -148,8 +150,8 @@ namespace Webbshoppen.Pages
             {
                 var productId = ConsoleUtils.GetIntFromUser("Ange id på produkten du vill ta bort: ");
                 var deleteProduct = (from p in db.Products
-                                  where p.Id == (productId)
-                                  select p).SingleOrDefault();
+                                     where p.Id == (productId)
+                                     select p).SingleOrDefault();
                 if (deleteProduct != null)
                 {
                     var productAnswer = ConsoleUtils.GetStringFromUser($"Är du säker på att du vill ta bort? j/n ");
@@ -169,8 +171,7 @@ namespace Webbshoppen.Pages
                 }
             }
         }
-
-        public void AlterProductName()
+        public void AlterProduct(int selectedIndex)
         {
             //TODO: Ändra produkter
             //Ta reda på produktens Id
@@ -180,37 +181,80 @@ namespace Webbshoppen.Pages
             using (var db = new MyDbContext())
             {
                 var productId = ConsoleUtils.GetIntFromUser("Ange Id på produkten du vill ändra");
-                var alterProductName = (from p in db.Products
-                                        where p.Id == (productId)
-                                        select p).SingleOrDefault();
-                if (alterProductName != null)
+                var alterProduct = (from p in db.Products
+                                    where p.Id == (productId)
+                                    select p).SingleOrDefault();
+                switch (selectedIndex)
                 {
-                    var productName = ConsoleUtils.GetStringFromUser($"Ange det nya namnet på produkten: ");
-                    alterProductName.Name = productName;
-                    db.SaveChanges();
-
+                    case (int)AdminMenu.Ändra_namn_på_produkt:
+                        var productName = ConsoleUtils.GetStringFromUser($"Ange det nya namnet på produkten: ");
+                        alterProduct.Name = productName;
+                        break;
+                    case (int)AdminMenu.Ändra_pris_på_produkt:
+                        var productPrice = ConsoleUtils.GetFloatFromUser($"Ange det nya priset på produkten: ");
+                        alterProduct.UnitPrice = productPrice;
+                        break;
+                    case (int)AdminMenu.Ändra_lagersaldo_på_produkt:
+                        var unitsInStock = ConsoleUtils.GetIntFromUser($"Ange det nya lagersaldot för produkten: ");
+                        alterProduct.UnitsInStock = unitsInStock;
+                        break;
+                    case (int)AdminMenu.Ändra_utvalda_produkter:
+                        var selectedAsInt = ConsoleUtils.GetIntFromUser("Ange 1 om utvald annars 0");
+                        var selected = (selectedAsInt == 1 ? true : false);
+                        alterProduct.Selected = selected;
+                        break;
+                    case (int)AdminMenu.Ändra_beskrivning_på_produkt:
+                        var description = ConsoleUtils.GetStringFromUser($"Ange en ny beskrivning för produkten: ");
+                        alterProduct.Description = description;
+                        break;
                 }
+
+                db.SaveChanges();
+
             }
         }
-        public void AlterProductPrice() 
-        { 
-        }
-        public void AlterUnitsInStock() 
-        { 
-        }
-        public void AlterSelectedProduct()
-        {
-            //TODO: Utvalda produkter på första startsidan
-        }
-        public void AlterProductDescription() 
-        {
-        }
+
+        //public void AlterProductName()
+        //{
+        //TODO: Ändra produkter
+        //    Ta reda på produktens Id
+        //    Vilken kolumn vill admin ändra
+        //    Name,Unitprice, UnitsinStock, Selected, Description
+        //    ShowProducts();
+        //    using (var db = new MyDbContext())
+        //    {
+        //        var productId = ConsoleUtils.GetIntFromUser("Ange Id på produkten du vill ändra");
+        //        var alterProductName = (from p in db.Products
+        //                                where p.Id == (productId)
+        //                                select p).SingleOrDefault();
+        //        if (alterProductName != null)
+        //        {
+        //            var productName = ConsoleUtils.GetStringFromUser($"Ange det nya namnet på produkten: ");
+        //            alterProductName.Name = productName;
+        //            db.SaveChanges();
+
+        //        }
+        //    }
+        //}
+        //public void AlterProductPrice()
+        //{
+        //}
+        //public void AlterUnitsInStock()
+        //{
+        //}
+        //public void AlterSelectedProduct()
+        //{
+        ////TODO: Utvalda produkter på första startsidan
+        //}
+        //public void AlterProductDescription()
+        //{
+        //}
 
         public void ShowCategories()
         {
-            using(var db = new MyDbContext())
-            {               
-                foreach(var category in db.Categories.Select(x=>x))
+            using (var db = new MyDbContext())
+            {
+                foreach (var category in db.Categories.Select(x => x))
                 {
                     Console.WriteLine($"{category.Id} {category.Name}");
                 }

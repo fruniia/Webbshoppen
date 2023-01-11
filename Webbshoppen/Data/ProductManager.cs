@@ -171,30 +171,8 @@ namespace Webbshoppen.Data
                     }
 
                     );
-               // context.SaveChanges();
+               //context.SaveChanges();
             }
         }
-
-        //public IQueryable<Product> GetProduct()
-        //{
-        //    using (var db = new MyDbContext())
-        //    {
-        //        var product = (from p in db.Products
-        //                      join c in db.Categories on p.CategoryId equals c.Id
-        //                      join s in db.Suppliers on p.SupplierId equals s.Id
-        //                      select new
-        //                      {
-        //                          Selected = p.Selected,
-        //                          Name = p.Name,
-        //                          UnitPrice = p.UnitPrice,
-        //                          Description = p.Description,
-        //                          UnitsInStock = p.UnitsInStock,
-        //                          CategoryName = c.Name,
-        //                          SupplierName = s.Name
-
-        //                      }).AsQueryable();
-        //        return product;
-        //    }
-        //}
     }
 }

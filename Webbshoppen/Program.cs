@@ -13,10 +13,10 @@ namespace Webbshoppen
             //sm.AddSuppliers();
             //ProductManager pm = new();
             //pm.AddProducts();
-            //Console.Title = "Klädesshoppen";
-            //Console.CursorVisible = false;
-            //AdminPage ap = new();
-            //StartPage sp = new StartPage();
+            Console.Title = "Klädesshoppen";
+            Console.CursorVisible = false;
+            AdminPage ap = new();
+            StartPage sp = new StartPage();
 
 
         }
