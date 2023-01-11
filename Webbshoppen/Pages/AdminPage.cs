@@ -179,11 +179,22 @@ namespace Webbshoppen.Pages
             ShowProducts();
             using(var db = new MyDbContext())
             {
-               // var productId = ConsoleUtils.GetStringFromUser("Ange Id på produkten du vill ändra");
-                
+                var productId = ConsoleUtils.GetIntFromUser("Ange Id på produkten du vill ändra");
+                var alterProductName = (from p in db.Products
+                                     where p.Id == (productId)
+                                     select p).SingleOrDefault();
+                if (alterProductName != null)
+                {
+                    var productName = ConsoleUtils.GetStringFromUser($"Ange den nya namnet: ");
+                    if (productName.Trim().ToLower().StartsWith("j"))
+                    {
+                        alterProductName.Name = 
+                        db.SaveChanges();
+                    }
 
 
-            }
+
+                }
 
         }
         public void AlterProductPrice() 
