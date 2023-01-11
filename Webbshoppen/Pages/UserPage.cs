@@ -10,6 +10,12 @@ namespace Webbshoppen.Pages
     {
         //TODO: Ändra uppgift om kunden
         //TODO: Beställningshistorik
+
+        //Fortsätt utan inloggning
+            //Handla
+        //Logga in
+        //Ny user
+            //Skapa ny användare
         
     }
 }

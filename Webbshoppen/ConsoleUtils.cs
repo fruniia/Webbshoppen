@@ -48,6 +48,18 @@ namespace Webbshoppen
 
             return result;
         }
-     
+        public static void WaitForKeyPress()
+        {
+            Console.WriteLine("(Tryck valfri tangent för att fortsätta.)");
+            Console.ReadKey(true);
+        }
+
+        public static void QuitConsole()
+        {
+            Console.WriteLine("(Tryck valfri tangent för att avsluta.)");
+            Console.ReadKey(true);
+            Environment.Exit(0);
+        }
+
     }
 }

@@ -15,8 +15,8 @@ namespace Webbshoppen
             //pm.AddProducts();
             Console.Title = "Klädesshoppen";
             Console.CursorVisible = false;
-            AdminPage ap = new();
             StartPage sp = new StartPage();
+            sp.Run();
 
 
         }
