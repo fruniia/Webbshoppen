@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Webbshoppen.Data;
+using Webbshoppen.Models;
 using static Webbshoppen.Pages.AdminPage;
 
 namespace Webbshoppen.Pages
@@ -18,6 +21,8 @@ namespace Webbshoppen.Pages
         //Lägg till produkten i ShopPage
         //Pris
         CategoryManager category = new();
+        ProductManager product = new();
+        List<Product> products = new();
         public enum ShopMenu
         {
             Shoppa,
@@ -29,7 +34,7 @@ namespace Webbshoppen.Pages
         }
 
         public void Run()
-        {           
+        {
             bool running = true;
             while (running)
             {
@@ -42,8 +47,11 @@ namespace Webbshoppen.Pages
                 switch (selectedIndex)
                 {
                     case 0:
-                        //Visa_alla_kategorier,
-                        category.ShowCategories();
+                        //Shoppa
+                        product.ShowProductsCategory();
+                        int productId = ConsoleUtils.GetIntFromUser($"Ange nummer för produkten du vill köpa: ");
+                        ShopProduct(productId);
+
                         break;
                     case 1:
                         //Sök,
@@ -60,10 +68,39 @@ namespace Webbshoppen.Pages
                     case 5:
                         running = false;
                         ConsoleUtils.QuitConsole();
-                        break; 
+                        break;
 
                 }
                 Console.ReadKey();
+            }
+        }
+
+        public void ShopProduct(int productId)
+        {
+            int quantity = ConsoleUtils.GetIntFromUser($"Ange antal: ");
+            var quantityAnswer = ConsoleUtils.GetStringFromUser($"Vill du lägga in {quantity} st? j/n: ");
+            using (var db = new MyDbContext())
+            {
+                //var cart = db.Carts;
+                var product = (from p in db.Products
+                               where p.Id == (productId)
+                               select p).SingleOrDefault();
+                if (quantityAnswer.Trim().ToLower().StartsWith("j"))
+                {
+                    var cart = new Cart
+                    {
+                        ProductId = product.Id,
+                        Quantity = quantity,
+                        UnitPrice = product.UnitPrice,
+                        TotalPrice = (product.UnitPrice * quantity)
+
+                    };
+                    db.Add(cart);
+                    db.SaveChanges();
+                }
+                // Else
+
+
             }
         }
 

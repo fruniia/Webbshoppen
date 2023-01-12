@@ -17,8 +17,8 @@ namespace Webbshoppen
             //Console.CursorVisible = false;
             //StartPage sp = new StartPage();
             //sp.Run();
-
-
+            ShopPage shopPage = new();
+            shopPage.Run();
 
         }
 
