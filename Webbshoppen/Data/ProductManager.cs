@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Webbshoppen.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
+using System.Runtime.CompilerServices;
+using System.Net.WebSockets;
 
 namespace Webbshoppen.Data
 {
@@ -172,6 +175,49 @@ namespace Webbshoppen.Data
 
                     );
                //context.SaveChanges();
+            }
+        }
+
+        public void ShowProducts()
+        {
+            using (var db = new MyDbContext())
+            {
+                var product = from p in db.Products
+                              join c in db.Categories on p.CategoryId equals c.Id
+                              join s in db.Suppliers on p.SupplierId equals s.Id
+                              select new
+                              {
+                                  Id = p.Id,
+                                  Selected = p.Selected,
+                                  Name = p.Name,
+                                  UnitPrice = p.UnitPrice,
+                                  Description = p.Description,
+                                  UnitsInStock = p.UnitsInStock,
+                                  CategoryName = c.Name,
+                                  SupplierName = s.Name
+                              };
+
+                foreach (var l in product)
+                {
+                    Console.WriteLine($"{(l.Selected == true ? "Utvald" : " ")}\t {l.Id} {l.Name} {l.UnitPrice} {l.Description} {l.UnitsInStock} {l.CategoryName} {l.SupplierName}");
+                }
+            }
+        }
+
+        public void ShowProductsCategory()
+        {
+            using (var db = new MyDbContext())
+            {
+
+                foreach (var category in db.Categories.Include(p => p.Products).ThenInclude(s => s.Supplier))
+                {
+                    Console.WriteLine($"{category.Name}");
+                    foreach(var product in category.Products)
+                    {
+                        Console.WriteLine($"\t{product.Id} {product.Name} {product.UnitPrice}kr {product.Supplier.Name}");
+                    }
+                    
+                }
             }
         }
     }

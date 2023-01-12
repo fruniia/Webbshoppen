@@ -24,5 +24,16 @@ namespace Webbshoppen.Data
             }
         }
 
+        public void ShowCategories()
+        {
+            using (var db = new MyDbContext())
+            {
+                foreach (var category in db.Categories.Select(x => x))
+                {
+                    Console.WriteLine($"{category.Id} {category.Name}");
+                }
+            }
+        }
+
     }
 }

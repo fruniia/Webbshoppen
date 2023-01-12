@@ -11,8 +11,10 @@ namespace Webbshoppen.Pages
 {
     internal class AdminPage
     {
+        ProductManager product = new();
         SupplierManager supplier = new();
         StartPage startPage = new();
+        CategoryManager category = new();
         public enum AdminMenu
         {
             Visa_alla_produkter,
@@ -38,6 +40,7 @@ namespace Webbshoppen.Pages
 
         public void Run()
         {
+            
             bool running = true;
             while (running)
             {
@@ -49,7 +52,7 @@ namespace Webbshoppen.Pages
                 switch (selectedIndex)
                 {
                     case 0:
-                        ShowProducts();
+                        product.ShowProducts();
                         break;
                     case 1:
                         AddProduct();
@@ -65,7 +68,7 @@ namespace Webbshoppen.Pages
                         AlterProduct(selectedIndex);
                         break;
                     case 8:
-                        ShowCategories();
+                        category.ShowCategories();
                         break;
                     case 9:
                         AddCategory();
@@ -91,7 +94,7 @@ namespace Webbshoppen.Pages
         {
 
             Console.WriteLine("Kategorier");
-            ShowCategories();
+            category.ShowCategories();
             Console.WriteLine("==================");
             Console.WriteLine("Leverantörer");
             supplier.ShowSuppliers();
@@ -142,34 +145,10 @@ namespace Webbshoppen.Pages
                 Run();
             }
         }
-        public void ShowProducts()
-        {
-            using (var db = new MyDbContext())
-            {
-                var product = from p in db.Products
-                              join c in db.Categories on p.CategoryId equals c.Id
-                              join s in db.Suppliers on p.SupplierId equals s.Id
-                              select new
-                              {
-                                  Id = p.Id,
-                                  Selected = p.Selected,
-                                  Name = p.Name,
-                                  UnitPrice = p.UnitPrice,
-                                  Description = p.Description,
-                                  UnitsInStock = p.UnitsInStock,
-                                  CategoryName = c.Name,
-                                  SupplierName = s.Name
-                              };
-
-                foreach (var l in product)
-                {
-                    Console.WriteLine($"{(l.Selected == true ? "Utvald" : " ")}\t {l.Id} {l.Name} {l.UnitPrice} {l.Description} {l.UnitsInStock} {l.CategoryName} {l.SupplierName}");
-                }
-            }
-        }
+      
         public void RemoveProduct()
         {
-            ShowProducts();
+            product.ShowProducts();
             using (var db = new MyDbContext())
             {
                 var productId = ConsoleUtils.GetIntFromUser("Ange id på produkten du vill ta bort: ");
@@ -199,7 +178,7 @@ namespace Webbshoppen.Pages
         }
         public void AlterProduct(int selectedIndex)
         {
-            ShowProducts();
+            product.ShowProducts();
             using (var db = new MyDbContext())
             {
                 var productId = ConsoleUtils.GetIntFromUser("Ange Id på produkten du vill ändra");
@@ -234,20 +213,10 @@ namespace Webbshoppen.Pages
                 db.SaveChanges();
             }
         }
-        public void ShowCategories()
-        {
-            using (var db = new MyDbContext())
-            {
-                foreach (var category in db.Categories.Select(x => x))
-                {
-                    Console.WriteLine($"{category.Id} {category.Name}");
-                }
-            }
-        }
         public void AddCategory()
         {
             Console.WriteLine("Kategorier");
-            ShowCategories();
+            category.ShowCategories();
             Console.WriteLine("==================");
 
             var categoryName = ConsoleUtils.GetStringFromUser("Ange Kategori: ");
@@ -274,7 +243,7 @@ namespace Webbshoppen.Pages
         }
         public void RemoveCategory()
         {
-            ShowCategories();
+            category.ShowCategories();
             using (var db = new MyDbContext())
             {
                 var categoryId = ConsoleUtils.GetIntFromUser("Ange id på kategorin du vill ta bort: ");

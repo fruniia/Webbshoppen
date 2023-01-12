@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Webbshoppen.Pages
 {
-    public enum UserCategory
+    public enum StartMenu
     {
         Logga_in_som_administratör,
         Logga_in_som_kund,
+        Shoppa_utan_inloggning,
         Avsluta
     }
     internal class StartPage
@@ -26,7 +27,7 @@ namespace Webbshoppen.Pages
         public void Run()
         {
             string prompt = ("Välkommen till Webshoppen");
-            string[] startOptions = Enum.GetNames(typeof(UserCategory));
+            string[] startOptions = Enum.GetNames(typeof(StartMenu));
             Menu startMenu = new Menu(prompt, startOptions);
             int selectedIndex = startMenu.Run();
 
@@ -37,9 +38,12 @@ namespace Webbshoppen.Pages
                     a.Run();
                     break;
                 case 1:
-                    Console.WriteLine("hopp");
+                   //Logga in som kund
                     break;
                 case 2:
+                   // Shoppa som gäst
+                    break;
+                case 3:
                     ConsoleUtils.QuitConsole();
                     break;
             }
