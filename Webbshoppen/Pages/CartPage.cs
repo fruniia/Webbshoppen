@@ -7,19 +7,21 @@ using static Webbshoppen.Pages.AdminPage;
 using Webbshoppen.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Webbshoppen.Pages
 {
     internal class CartPage
     {
         ShopPage MyShopPage = new();
-        enum CartOptions
+        public enum CartOptions
         {
             Ändra_antal,
             Ta_bort_produkt,
             Töm_varukorg,
             Fortsätt_shoppa,
-            Gå_till_betalning
+            Gå_till_betalning,
+            Visa_varukorg
         }
         public CartPage()
         {
@@ -33,48 +35,67 @@ namespace Webbshoppen.Pages
             while (running)
             {
                 int userid = 1; //TODO: Userid hårdkodat
-                string prompt = $"Varukorg\n{ShowProductsInCart(userid)}";
+                string prompt = $"Varukorg\n";
                 //ShowProductsInCart(userid);
                 string[] options = Enum.GetNames(typeof(CartOptions));
 
                 Menu cartMenu = new Menu(prompt, options);
                 int selectedIndex = cartMenu.Run();
+
                 switch (selectedIndex)
                 {
                     case 0:
+                        ShowProductsInCart(userid);
+                        int productId = ConsoleUtils.GetIntFromUser("Ange produktid: ");
+                        int quantity = ConsoleUtils.GetIntFromUser("Ange antal: ");
+                        ChangeQuantityOfProduct(productId, userid, quantity);
                         break;
                     case 1:
+                        ShowProductsInCart(userid);
+                        productId = ConsoleUtils.GetIntFromUser("Ange produktid: ");
+                        RemoveProductFromCart(productId, userid);
                         break;
                     case 2:
+                        EmptyCartFromProducts(userid);
                         break;
                     case 3:
                         MyShopPage.Run();
                         break;
                     case 4:
-                        break;
-                    default:
+                    case 5:
+                        ShowProductsInCart(userid);
+                        ConsoleUtils.WaitForKeyPress();
                         break;
                 }
                 Console.ReadKey();
             }
         }
-        public string ShowProductsInCart(int userid)
+        public void ShowProductsInCart(int userid)
         {
             using (var db = new MyDbContext())
             {
-                //var query = db.Carts.Where(c => c.UserId == userid).Select(c => c.TotalPrice);
-                foreach (var value in db.Carts.Include(p => p.Product).Where(c => c.UserId == userid))
+                var query = from c in db.Carts
+                            join p in db.Products on c.ProductId equals p.Id
+                            where c.UserId == userid
+                            select new
+                            {
+                                Id = p.Id,
+                                ProductName = p.Name,
+                                Quantity = c.Quantity,
+                                UnitPrice = c.UnitPrice,
+                                TotalPrice = c.TotalPrice,
+                            };
+
+                foreach (var value in query)
                 {
-                    return $"{value.Id}\t{value.Product.Name}\t{value.Quantity}\t{value.UnitPrice}\t{value.TotalPrice}";
-                    //$"\t{query.Count()}";
+                    Console.WriteLine($"{value.Id}\t{value.ProductName}\t{value.Quantity}\t{value.UnitPrice}\t{value.TotalPrice}");
                 }
-                return "";
             }
             //Priset visas och summan av produkterna visas längst ner
         }
         public void ChangeQuantityOfProduct(int productId, int userId, int quantity)
         {
-            //Möjlighet att ändra antal
+
             using (var db = new MyDbContext())
             {
                 var productInCart = (from c in db.Carts
@@ -93,13 +114,51 @@ namespace Webbshoppen.Pages
                 db.SaveChanges();
             };
         }
-        public void RemoveProductFromCart()
+        public void RemoveProductFromCart(int productId, int userId)
         {
-            //Möjlighet att ta bort produkt
+            using (var db = new MyDbContext())
+            {
+                var productInCart = from c in db.Carts
+                                     join p in db.Products on c.ProductId equals p.Id
+                                     where c.ProductId == productId && c.UserId == userId
+                                     select c;
+                if (productInCart != null)
+                {
+                    db.Carts.RemoveRange(productInCart);
+                }
+                else
+                {
+                    Console.WriteLine("Plockade inte bort produkten.");
+                }
+                db.SaveChanges();
+            };
         }
-        public void EmptyCartFromProducts()
+        public void EmptyCartFromProducts(int userId)
         {
-            //Ska tömmas när betalning är gjord
+            using (var db = new MyDbContext())
+            {
+                var productInCart = from c in db.Carts
+                                    join p in db.Products on c.ProductId equals p.Id
+                                    where c.UserId == userId
+                                    select c;
+                if (productInCart != null)
+                {
+                    string answer = ConsoleUtils.GetStringFromUser("Är du säker? j/n");
+                    if (answer.Trim().ToLower().StartsWith("j"))
+                    {
+                        db.Carts.RemoveRange(productInCart);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Varukorgen tömdes inte");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Varukorgen tömdes inte.");
+                }
+                db.SaveChanges();
+            };
         }
 
         public void GoToCheckOut()

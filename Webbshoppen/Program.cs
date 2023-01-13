@@ -17,10 +17,10 @@ namespace Webbshoppen
             //Console.CursorVisible = false;
             //StartPage sp = new StartPage();
             //sp.Run();
-            //ShopPage shopPage = new();
-            //shopPage.Run();
-            CartPage cartPage= new();
-            cartPage.ChangeQuantityOfProduct(1, 1, 5);
+            ShopPage shopPage = new();
+            shopPage.Run();
+            //CartPage cartPage = new();
+            //cartPage.Run();
 
 
         }

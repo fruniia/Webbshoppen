@@ -129,7 +129,7 @@ namespace Webbshoppen.Pages
                         db.Add(product);
                         db.SaveChanges();
                     }
-                    catch (Exception e)
+                    catch (Exception )
                     {
                         Console.WriteLine("Felaktig val av leverantörs- eller kategori-id");
                         ConsoleUtils.WaitForKeyPress();

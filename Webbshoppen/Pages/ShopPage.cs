@@ -22,7 +22,6 @@ namespace Webbshoppen.Pages
         //Pris
         CategoryManager category = new();
         ProductManager product = new();
-        List<Product> products = new();
         public enum ShopMenu
         {
             Shoppa,
@@ -52,12 +51,13 @@ namespace Webbshoppen.Pages
                         int productId = ConsoleUtils.GetIntFromUser($"Ange nummer för produkten du vill köpa: ");
                         int userId = 1; //TODO: Eventuellt ändra - Hårdkodat!
                         ShopProduct(productId, userId);
-
                         break;
                     case 1:
                         //Sök,
                         break;
                     case 2:
+                        CartPage cart = new();
+                        cart.Run();
                         //Varukorg,
                         break;
                     case 3:
@@ -104,10 +104,9 @@ namespace Webbshoppen.Pages
                 {
                     Console.WriteLine("Produkten lades inte till");
                     ConsoleUtils.WaitForKeyPress();
-                    Run();
+                    //Run();
                 }
             }
         }
-
     }
 }
