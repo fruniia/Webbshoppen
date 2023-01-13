@@ -50,7 +50,8 @@ namespace Webbshoppen.Pages
                         //Shoppa
                         product.ShowProductsCategory();
                         int productId = ConsoleUtils.GetIntFromUser($"Ange nummer för produkten du vill köpa: ");
-                        ShopProduct(productId);
+                        int userId = 1; //TODO: Eventuellt ändra - Hårdkodat!
+                        ShopProduct(productId, userId);
 
                         break;
                     case 1:
@@ -75,7 +76,7 @@ namespace Webbshoppen.Pages
             }
         }
 
-        public void ShopProduct(int productId)
+        public void ShopProduct(int productId, int userId)
         {
             int quantity = ConsoleUtils.GetIntFromUser($"Ange antal: ");
             var quantityAnswer = ConsoleUtils.GetStringFromUser($"Vill du lägga in {quantity} st? j/n: ");
@@ -89,6 +90,7 @@ namespace Webbshoppen.Pages
                 {
                     var cart = new Cart
                     {
+                        UserId = userId,
                         ProductId = product.Id,
                         Quantity = quantity,
                         UnitPrice = product.UnitPrice,
@@ -98,9 +100,12 @@ namespace Webbshoppen.Pages
                     db.Add(cart);
                     db.SaveChanges();
                 }
-                // Else
-
-
+                else
+                {
+                    Console.WriteLine("Produkten lades inte till");
+                    ConsoleUtils.WaitForKeyPress();
+                    Run();
+                }
             }
         }
 
