@@ -36,7 +36,6 @@ namespace Webbshoppen.Pages
             {
                 int userid = 1; //TODO: Userid hårdkodat
                 string prompt = $"Varukorg\n";
-                //ShowProductsInCart(userid);
                 string[] options = Enum.GetNames(typeof(CartOptions));
 
                 Menu cartMenu = new Menu(prompt, options);
@@ -62,6 +61,9 @@ namespace Webbshoppen.Pages
                         MyShopPage.Run();
                         break;
                     case 4:
+                        CheckOutPage checkOut = new();
+                        //Checkout
+                        break;
                     case 5:
                         ShowProductsInCart(userid);
                         ConsoleUtils.WaitForKeyPress();
