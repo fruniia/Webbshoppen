@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Webbshoppen.Models;
@@ -11,7 +12,7 @@ namespace Webbshoppen.Pages
     {
         public enum Payment
         { 
-            Kort,
+            Kort = 1,
             Faktura
         }
         public enum Checkout
@@ -47,8 +48,11 @@ namespace Webbshoppen.Pages
                     break;
                 case 2:
                     // Välj frakt- och betalningsalternativ
+                    //Få information om frakt = home/inte och betalning = faktura/kort
                     break;
                 case 3:
+                    int paymentId = PaymentOptions();
+                    Console.WriteLine(paymentId);
                     //betala -> OrderPage
                     break;
                 case 4:
@@ -72,36 +76,47 @@ namespace Webbshoppen.Pages
                     PostalCode = 1111,
                     CityId = 1,
                     PhoneNumber = "",
-                    HomeDelivery = true, //Homedelivery
+                    DeliveryOption = true, //Homedelivery
                     ShippingPrice = 10,
 
                 };
             }
         }
 
-        public void PaymentOptions(int option)
+        public int PaymentOptions()
         {
+            int option = ConsoleUtils.GetIntFromUser("Välj betalningsalternativ 1 = Kort, 2 = Faktura: ");
+
             using (var db = new MyDbContext())
             {
                 if (option == (int)Payment.Kort)
                 {
-                    var payment = new CardPayment
+                    var payment = new Models.Payment
                     {
-                        CardNumber= 1,
-                        CardOwnerName = 1, //TODO: Ändra till string
-                        Month = 1,
-                        Year = 2023,
-                        CvvCode = 111,
+                        PaymentOption = true
+                        
                     };
+                    db.Add(payment);
                 }
-                if (option == (int)Payment.Faktura)
+                else if (option == (int)Payment.Faktura)
                 {
-                    //var invoice = new InvoicePayment
-                    //{
-                    //    Id = 1,
-                    //    Orders = { }
-                    //};
+                    var payment = new Models.Payment
+                    {
+                        PaymentOption = false
+                    };
+                    db.Add(payment);
                 }
+                else
+                {
+                    Console.WriteLine("Inget giltigt alternativ");
+                    ConsoleUtils.WaitForKeyPress();
+                    PaymentOptions();
+                }
+                db.SaveChanges();
+
+                var paymentId = db.Payments.Select(x => x.Id).Max().ToString();
+
+                return Convert.ToInt32(paymentId);
             }
         }
     }

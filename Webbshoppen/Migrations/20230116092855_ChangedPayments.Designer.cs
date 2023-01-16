@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Webbshoppen.Models;
 
@@ -11,9 +12,10 @@ using Webbshoppen.Models;
 namespace Webbshoppen.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230116092855_ChangedPayments")]
+    partial class ChangedPayments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +23,21 @@ namespace Webbshoppen.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("OrderPayment", b =>
+                {
+                    b.Property<int>("OrdersId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PaymentsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrdersId", "PaymentsId");
+
+                    b.HasIndex("PaymentsId");
+
+                    b.ToTable("OrderPayment");
+                });
 
             modelBuilder.Entity("OrderProduct", b =>
                 {
@@ -35,6 +52,21 @@ namespace Webbshoppen.Migrations
                     b.HasIndex("ProductsId");
 
                     b.ToTable("OrderProduct");
+                });
+
+            modelBuilder.Entity("OrderShipping", b =>
+                {
+                    b.Property<int>("OrdersId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShippingsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrdersId", "ShippingsId");
+
+                    b.HasIndex("ShippingsId");
+
+                    b.ToTable("OrderShipping");
                 });
 
             modelBuilder.Entity("Webbshoppen.Models.Cart", b =>
@@ -133,13 +165,7 @@ namespace Webbshoppen.Migrations
                     b.Property<int>("OrderDate")
                         .HasColumnType("int");
 
-                    b.Property<int>("PaymentId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ShippingId")
                         .HasColumnType("int");
 
                     b.Property<float>("TotalPrice")
@@ -152,10 +178,6 @@ namespace Webbshoppen.Migrations
                         .HasColumnType("real");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PaymentId");
-
-                    b.HasIndex("ShippingId");
 
                     b.HasIndex("UserId");
 
@@ -307,6 +329,21 @@ namespace Webbshoppen.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("OrderPayment", b =>
+                {
+                    b.HasOne("Webbshoppen.Models.Order", null)
+                        .WithMany()
+                        .HasForeignKey("OrdersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Webbshoppen.Models.Payment", null)
+                        .WithMany()
+                        .HasForeignKey("PaymentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("OrderProduct", b =>
                 {
                     b.HasOne("Webbshoppen.Models.Order", null)
@@ -318,6 +355,21 @@ namespace Webbshoppen.Migrations
                     b.HasOne("Webbshoppen.Models.Product", null)
                         .WithMany()
                         .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("OrderShipping", b =>
+                {
+                    b.HasOne("Webbshoppen.Models.Order", null)
+                        .WithMany()
+                        .HasForeignKey("OrdersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Webbshoppen.Models.Shipping", null)
+                        .WithMany()
+                        .HasForeignKey("ShippingsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -348,27 +400,11 @@ namespace Webbshoppen.Migrations
 
             modelBuilder.Entity("Webbshoppen.Models.Order", b =>
                 {
-                    b.HasOne("Webbshoppen.Models.Payment", "Payment")
-                        .WithMany("Orders")
-                        .HasForeignKey("PaymentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Webbshoppen.Models.Shipping", "Shipping")
-                        .WithMany("Orders")
-                        .HasForeignKey("ShippingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Webbshoppen.Models.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Payment");
-
-                    b.Navigation("Shipping");
 
                     b.Navigation("User");
                 });
@@ -414,19 +450,9 @@ namespace Webbshoppen.Migrations
                     b.Navigation("Cities");
                 });
 
-            modelBuilder.Entity("Webbshoppen.Models.Payment", b =>
-                {
-                    b.Navigation("Orders");
-                });
-
             modelBuilder.Entity("Webbshoppen.Models.Product", b =>
                 {
                     b.Navigation("Carts");
-                });
-
-            modelBuilder.Entity("Webbshoppen.Models.Shipping", b =>
-                {
-                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("Webbshoppen.Models.Supplier", b =>

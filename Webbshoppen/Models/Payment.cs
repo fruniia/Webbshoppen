@@ -8,14 +8,10 @@ using System.Threading.Tasks;
 
 namespace Webbshoppen.Models
 {
-    public class CardPayment
+    public class Payment
     {
         public int Id { get; set; }
-        public long CardNumber { get; set; }
-        public int CardOwnerName { get; set; }
-        public int Month { get; set; }
-        public int Year { get; set; }
-        public int CvvCode { get; set; }
+        public bool PaymentOption { get; set; } //Kort = 1, Faktura = 0
         public ICollection<Order>? Orders { get; set; }
     }
 }

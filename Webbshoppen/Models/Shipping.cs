@@ -14,7 +14,7 @@ namespace Webbshoppen.Models
         public string Address { get; set; }
         public int PostalCode { get; set; }
         public string? PhoneNumber { get; set; }
-        public bool HomeDelivery { get; set; } //1 = Home, 0 = ShippingAgent
+        public bool DeliveryOption { get; set; } //1 = Home, 0 = ShippingAgent
         public float ShippingPrice { get; set; }
         public int CityId { get; set; }
         public virtual  City? City { get; set; }
