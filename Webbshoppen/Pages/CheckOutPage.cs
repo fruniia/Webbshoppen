@@ -11,9 +11,14 @@ namespace Webbshoppen.Pages
     internal class CheckOutPage
     {
         public enum Payment
-        { 
+        {
             Kort = 1,
             Faktura
+        }
+        public enum ShippingOption
+        {
+            Hemleverans = 1,
+            Ombud
         }
         public enum Checkout
         {
@@ -36,7 +41,8 @@ namespace Webbshoppen.Pages
             string[] startOptions = Enum.GetNames(typeof(Checkout));
             Menu startMenu = new Menu(prompt, startOptions);
             int selectedIndex = startMenu.Run();
-
+            int shippingId;
+            int paymentId;
             switch (selectedIndex)
             {
                 case 0:
@@ -49,13 +55,17 @@ namespace Webbshoppen.Pages
                 case 2:
                     // Välj frakt- och betalningsalternativ
                     //Få information om frakt = home/inte och betalning = faktura/kort
+                    shippingId = SetShippingOptions();
                     break;
                 case 3:
-                    int paymentId = PaymentOptions();
+                    paymentId = SetPaymentOptions();
                     Console.WriteLine(paymentId);
                     //betala -> OrderPage
                     break;
                 case 4:
+                    //betala
+                    break;
+                case 5:
                     ConsoleUtils.QuitConsole();
                     break;
             }
@@ -65,25 +75,53 @@ namespace Webbshoppen.Pages
         {
 
         }
-        public void ShippingOptions()
+        public int SetShippingOptions()
         {
+            Console.WriteLine("Mata in följande uppifter");
+            var firstName = ConsoleUtils.GetStringFromUser("Förnamn: ");
+            var lastName = ConsoleUtils.GetStringFromUser("Efternamn: ");
+            var address = ConsoleUtils.GetStringFromUser("Adress: ");
+            var postalCode = ConsoleUtils.GetIntFromUser("Postnummer: ");
+            var city = ConsoleUtils.GetStringFromUser("Stad: ");
+            var country = ConsoleUtils.GetStringFromUser("Land: ");
+            var phoneNumber = ConsoleUtils.GetStringFromUser("Telefonnummer: ");
+            int option = ConsoleUtils.GetIntFromUser("Välj fraktalternativ 1 = Hemleverans, 2 = Ombud: ");
+
             using (var db = new MyDbContext())
             {
+
                 var shipping = new Shipping
                 {
-                    CustomerName = "",
-                    Address = "",
-                    PostalCode = 1111,
-                    CityId = 1,
-                    PhoneNumber = "",
-                    DeliveryOption = true, //Homedelivery
-                    ShippingPrice = 10,
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Address = address,
+                    PostalCode = postalCode,
+                    City = city,
+                    Country = country,
+                    PhoneNumber = phoneNumber,
+                    DeliveryOption = (option == (int)ShippingOption.Hemleverans ? true : false), //Homedelivery
+                    ShippingPrice = (option == (int)ShippingOption.Hemleverans ? 79 : 49),
 
                 };
+                if (option == 1 || option == 2)
+                {
+                    db.Add(shipping);
+                   // db.SaveChanges();
+                }
+                else
+                {
+                    Console.WriteLine("Du valde ett felaktigt alternativ");
+                    ConsoleUtils.WaitForKeyPress();
+                    SetShippingOptions();
+                }
+
+                var shippingId = db.Shippings.Select(x => x.Id).Max().ToString();
+
+                return Convert.ToInt32(shippingId);
             }
         }
 
-        public int PaymentOptions()
+        public int SetPaymentOptions()
         {
             int option = ConsoleUtils.GetIntFromUser("Välj betalningsalternativ 1 = Kort, 2 = Faktura: ");
 
@@ -94,7 +132,7 @@ namespace Webbshoppen.Pages
                     var payment = new Models.Payment
                     {
                         PaymentOption = true
-                        
+
                     };
                     db.Add(payment);
                 }
@@ -110,7 +148,7 @@ namespace Webbshoppen.Pages
                 {
                     Console.WriteLine("Inget giltigt alternativ");
                     ConsoleUtils.WaitForKeyPress();
-                    PaymentOptions();
+                    SetPaymentOptions();
                 }
                 db.SaveChanges();
 

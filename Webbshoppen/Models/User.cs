@@ -9,7 +9,8 @@ namespace Webbshoppen.Models
     public class User
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public int BirthYear { get; set; }
         public int BirthMonth { get; set; }
         public int BirthDay { get; set; }

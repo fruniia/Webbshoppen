@@ -16,8 +16,6 @@ namespace Webbshoppen.Models
 
         public DbSet<Payment> Payments { get; set; } 
         public DbSet<Category> Categories { get; set; }
-        public DbSet<City> Cities { get; set; }
-        public DbSet<Country> Countries  { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Shipping> Shippings { get; set; }
