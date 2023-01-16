@@ -29,12 +29,6 @@ namespace Webbshoppen.Pages
             Betala,
             Avsluta
         }
-        //Fraktvy
-        //Namn, adress, , postnummer, stad, land, telefon, homedelivery, shippingprice
-        //Betalavy
-        //Produkter visas med pris
-        //Pris med frakt, samt moms, 
-        //Val av betalning 
         public void Run()
         {
             string prompt = ("Dags att betala");
@@ -43,6 +37,7 @@ namespace Webbshoppen.Pages
             int selectedIndex = startMenu.Run();
             int shippingId;
             int paymentId;
+            int userid;
             switch (selectedIndex)
             {
                 case 0:
@@ -50,30 +45,29 @@ namespace Webbshoppen.Pages
                     sp.Run();
                     break;
                 case 1:
-                    //Logga in som kund ->
+                    UserPage up = new();
+                    userid = up.CheckUserDetails();
+                    up.LogInUser(userid);
                     break;
                 case 2:
-                    // Välj frakt- och betalningsalternativ
-                    //Få information om frakt = home/inte och betalning = faktura/kort
                     shippingId = SetShippingOptions();
+                    Console.WriteLine(shippingId);
                     break;
                 case 3:
                     paymentId = SetPaymentOptions();
                     Console.WriteLine(paymentId);
-                    //betala -> OrderPage
                     break;
                 case 4:
                     //betala
+                    //Kolla så att userid != null
+                        //Om null
+                            //Logga in
+                                //Betala skicka med shippingId och PaymentId och UserId
                     break;
                 case 5:
                     ConsoleUtils.QuitConsole();
                     break;
             }
-        }
-
-        public void LogInCustomer()
-        {
-
         }
         public int SetShippingOptions()
         {
@@ -89,7 +83,6 @@ namespace Webbshoppen.Pages
 
             using (var db = new MyDbContext())
             {
-
                 var shipping = new Shipping
                 {
                     FirstName = firstName,
@@ -106,7 +99,7 @@ namespace Webbshoppen.Pages
                 if (option == 1 || option == 2)
                 {
                     db.Add(shipping);
-                   // db.SaveChanges();
+                    db.SaveChanges();
                 }
                 else
                 {
