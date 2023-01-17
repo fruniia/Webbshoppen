@@ -99,20 +99,11 @@ namespace Webbshoppen.Migrations
                     b.Property<int>("PaymentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
                     b.Property<int>("ShippingId")
                         .HasColumnType("int");
 
-                    b.Property<float>("TotalPrice")
-                        .HasColumnType("real");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
-
-                    b.Property<float>("VAT")
-                        .HasColumnType("real");
 
                     b.HasKey("Id");
 
@@ -123,6 +114,38 @@ namespace Webbshoppen.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Webbshoppen.Models.OrderDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<float>("UnitPrice")
+                        .HasColumnType("real");
+
+                    b.Property<float>("VAT")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("Webbshoppen.Models.Payment", b =>
@@ -339,6 +362,21 @@ namespace Webbshoppen.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Webbshoppen.Models.OrderDetail", b =>
+                {
+                    b.HasOne("Webbshoppen.Models.Order", "Order")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("OrderId");
+
+                    b.HasOne("Webbshoppen.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Webbshoppen.Models.Product", b =>
                 {
                     b.HasOne("Webbshoppen.Models.Category", "Category")
@@ -357,6 +395,11 @@ namespace Webbshoppen.Migrations
             modelBuilder.Entity("Webbshoppen.Models.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Webbshoppen.Models.Order", b =>
+                {
+                    b.Navigation("OrderDetails");
                 });
 
             modelBuilder.Entity("Webbshoppen.Models.Payment", b =>

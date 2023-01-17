@@ -38,7 +38,7 @@ namespace Webbshoppen.Pages
             int selectedIndex = startMenu.Run();
             int shippingId = 1;
             int paymentId = 1;
-            int userid = 2;
+            int userid = 1;
             switch (selectedIndex)
             {
                 case 0:
@@ -66,6 +66,7 @@ namespace Webbshoppen.Pages
                     //Om null
                     //Logga in
                     //Betala skicka med shippingId och PaymentId och UserId
+
                     ConsoleUtils.WaitForKeyPress();
                     Run();
                     break;

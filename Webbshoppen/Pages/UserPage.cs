@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -150,9 +151,8 @@ namespace Webbshoppen.Pages
             using (var db = new MyDbContext())
             {
 
-                foreach (var item in db.Orders.Include(x => x.Products).Include(y => y.Shipping)
-                    .Include(z => z.Payment)
-                    .Where(x => x.UserId == userid).GroupBy(x => x.Id))
+                foreach (var item in db.Orders.Include(o => o.OrderDetails).Include(x => x.Products)
+                   .Where(x => x.UserId == userid).GroupBy(x => x.Id))
                 {
                     foreach (var i in item)
                     {
@@ -162,8 +162,12 @@ namespace Webbshoppen.Pages
                         Console.WriteLine($"Pris för frakt: {i.Shipping.ShippingPrice}");
                         foreach (var p in i.Products)
                         {
-                            Console.WriteLine($"Produkt: {p.Name} Antal: {i.Quantity} Pris: {p.UnitPrice} Moms: {(p.UnitPrice * 0.20)} kr" +
-                                $"-Totalpris: {i.TotalPrice}");
+                            Console.WriteLine($"{p.Name}");
+                        }
+                        foreach (var o in i.OrderDetails)
+                        {
+                            Console.WriteLine($"Antal: {o.Quantity} Pris: {o.UnitPrice} Moms: {o.VAT} kr" +
+                                $"-Totalpris: {(o.UnitPrice * o.Quantity)}");
 
                         }
                     }

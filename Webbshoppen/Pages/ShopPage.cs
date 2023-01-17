@@ -49,7 +49,7 @@ namespace Webbshoppen.Pages
                         //Shoppa
                         product.ShowProductsCategory();
                         int productId = ConsoleUtils.GetIntFromUser($"Ange nummer för produkten du vill köpa: ");
-                        int userId = 2; //TODO: Eventuellt ändra - Hårdkodat!
+                        int userId = 1; //TODO: Eventuellt ändra - Hårdkodat!
                         ShopProduct(productId, userId);
                         break;
                     case 1:
