@@ -113,7 +113,6 @@ namespace Webbshoppen.Pages
                 return Convert.ToInt32(shippingId);
             }
         }
-
         public int SetPaymentOptions()
         {
             int option = ConsoleUtils.GetIntFromUser("Välj betalningsalternativ 1 = Kort, 2 = Faktura: ");

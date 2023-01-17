@@ -53,18 +53,18 @@ namespace Webbshoppen.Pages
                         ShopProduct(productId, userId);
                         break;
                     case 1:
-                        //Sök,
+                        //TODO: Sök,
                         break;
                     case 2:
                         CartPage cart = new();
                         cart.Run();
-                        //Varukorg,
                         break;
                     case 3:
-                        //Betala,
+                        CheckOutPage co = new();
+                        co.Run();
                         break;
                     case 4:
-                        //Mina_sidor,
+                        //TODO: Mina_sidor,
                         break;
                     case 5:
                         running = false;
