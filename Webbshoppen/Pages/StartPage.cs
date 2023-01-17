@@ -38,7 +38,8 @@ namespace Webbshoppen.Pages
                     a.Run();
                     break;
                 case 1:
-                   //Logga in som kund
+                    UserPage userPage= new ();
+                    userPage.Run();
                     break;
                 case 2:
                    // Shoppa som gäst

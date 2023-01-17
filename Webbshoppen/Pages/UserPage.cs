@@ -15,12 +15,17 @@ namespace Webbshoppen.Pages
     {
         //TODO: Ändra uppgift om kunden
         //TODO: Beställningshistorik
-
-        //Fortsätt utan inloggning
-        //Handla
-        //Logga in
-        //Ny user
-        //Skapa ny användare
+        public enum UserMenu
+        {
+            Beställningshistorik,
+            Ändra_förnamn,
+            Ändra_efternamn,
+            Ändra_emailadress,
+            Ändra_lösenord,
+            Visa_varukorg,
+            Shoppa,
+            Avsluta
+        }
 
         public int CheckUserDetails()
         {
@@ -58,17 +63,6 @@ namespace Webbshoppen.Pages
             }
         }
 
-        public enum UserMenu
-        {
-            Beställningshistorik,
-            Ändra_förnamn,
-            Ändra_efternamn,
-            Ändra_emailadress,
-            Ändra_lösenord,
-            Visa_varukorg,
-            Shoppa,
-            Avsluta
-        }
         public void Run()
         {
             bool running = true;
@@ -156,38 +150,25 @@ namespace Webbshoppen.Pages
         {
             using (var db = new MyDbContext())
             {
-                var productOrder = db.Products.Include(p => p.Orders);
-                var orderProduct = db.Orders.Where(x => x.UserId == userid);
 
-                foreach (var order in orderProduct)
+                foreach (var item in db.Orders.Include(x => x.Products).Include(y => y.Shipping)
+                    .Include(z => z.Payment)
+                    .Where(x => x.UserId == userid).GroupBy(x => x.Id))
                 {
-                    Console.WriteLine($"OrderId: {order.Id}");
-                    foreach (var product in productOrder)
+                    foreach (var i in item)
                     {
-                        //product.Orders; 
+                        Console.WriteLine($"Orderid: {i.Id} {i.OrderDate}");
+                        Console.WriteLine($"Betalningssätt: {(i.Payment.PaymentOption == true ? "Kort" : "Faktura")}");
+                        Console.WriteLine($"Fraktssätt: {(i.Shipping.DeliveryOption == true ? "Hemleverans" : "Ombud")}");
+                        Console.WriteLine($"Pris för frakt: {i.Shipping.ShippingPrice}");
+                        foreach (var p in i.Products)
+                        {
+                            Console.WriteLine($"Produkt: {p.Name} Antal: {i.Quantity} Pris: {p.UnitPrice} Moms: {(p.UnitPrice * 0.20)} kr" +
+                                $"-Totalpris: {i.TotalPrice}");
 
+                        }
                     }
                 }
-                //foreach (var item in db.Orders.Include(x => x.Products)
-                //    .Where(x => x.UserId == userid);
-                //{
-                //    //Console.WriteLine($"Order{item.Key};");
-
-                //    //foreach (var group in item)
-                //    //{
-                //    //    Console.WriteLine($"{item.OrderDate}\t");
-                //    //    Console.WriteLine($"{item.Products.}");
-                //    //    Datum
-                //        //Produkt
-                //        //Antal
-                //        //Pris
-                //        //Fraktpris
-                //        //Moms
-                //        //Totalpris
-                //        //Betalningssätt
-                //        //Fraktsätt
-                //        //}
-                //}
             }
         }
     }
