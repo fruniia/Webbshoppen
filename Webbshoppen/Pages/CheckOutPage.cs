@@ -52,16 +52,15 @@ namespace Webbshoppen.Pages
                     break;
                 case 2:
                     shippingId = SetShippingOptions();
-                    Console.WriteLine(shippingId);
+                    
                     Run();
                     break;
                 case 3:
-                    paymentId = SetPaymentOptions();
-                    Console.WriteLine(paymentId);
+                    paymentId = GoToPayment(userid, shippingId);
+                    ConsoleUtils.WaitForKeyPress();
                     Run();
                     break;
                 case 4:
-                    ShowCurrentOrder(userid, shippingId, paymentId);
                     //betala
                     //Kolla så att userid != null
                     //Om null
@@ -75,8 +74,9 @@ namespace Webbshoppen.Pages
                     break;
             }
         }
-        public void ShowCurrentOrder(int userid, int shippingId, int paymentId)
+        public int GoToPayment(int userid, int shippingId)
         {
+            int paymentId= 0;
             using (var db = new MyDbContext())
             {
 
@@ -91,18 +91,17 @@ namespace Webbshoppen.Pages
                         Console.WriteLine($"Totalpris: {c.TotalPrice}");
                     }
                 }
-                var payment = db.Payments.Where(p => p.Id == paymentId);
+                
                 var shipping = db.Shippings.Where(s => s.Id == shippingId);
-                foreach (var p in payment)
-                {
-                    Console.WriteLine($"Betalningssätt: {(p.PaymentOption == true ? "Kort" : "Faktura")}");
-                }
                 foreach (var s in shipping)
                 {
                     Console.WriteLine($"Fraktssätt: {(s.DeliveryOption == true ? "Hemleverans" : "Ombud")}");
                     Console.WriteLine($"Pris för frakt: {s.ShippingPrice}");
                 }
             }
+            paymentId = SetPaymentOptions();
+
+            return paymentId;
         }
         public int SetShippingOptions()
         {
