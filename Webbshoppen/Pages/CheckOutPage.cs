@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -35,9 +36,9 @@ namespace Webbshoppen.Pages
             string[] startOptions = Enum.GetNames(typeof(Checkout));
             Menu startMenu = new Menu(prompt, startOptions);
             int selectedIndex = startMenu.Run();
-            int shippingId;
-            int paymentId;
-            int userid;
+            int shippingId = 1;
+            int paymentId = 1;
+            int userid = 2;
             switch (selectedIndex)
             {
                 case 0:
@@ -52,21 +53,55 @@ namespace Webbshoppen.Pages
                 case 2:
                     shippingId = SetShippingOptions();
                     Console.WriteLine(shippingId);
+                    Run();
                     break;
                 case 3:
                     paymentId = SetPaymentOptions();
                     Console.WriteLine(paymentId);
+                    Run();
                     break;
                 case 4:
+                    ShowCurrentOrder(userid, shippingId, paymentId);
                     //betala
                     //Kolla så att userid != null
-                        //Om null
-                            //Logga in
-                                //Betala skicka med shippingId och PaymentId och UserId
+                    //Om null
+                    //Logga in
+                    //Betala skicka med shippingId och PaymentId och UserId
+                    ConsoleUtils.WaitForKeyPress();
+                    Run();
                     break;
                 case 5:
                     ConsoleUtils.QuitConsole();
                     break;
+            }
+        }
+        public void ShowCurrentOrder(int userid, int shippingId, int paymentId)
+        {
+            using (var db = new MyDbContext())
+            {
+
+                foreach (var item in db.Products.Include(x => x.Carts.Where(c => c.UserId == userid)))
+                {
+
+                    foreach (var c in item.Carts)
+                    {
+                        Console.WriteLine($"Produktnamn: {item.Name}");
+                        Console.WriteLine($"Antal: {c.Quantity}");
+                        Console.WriteLine($"Pris: {c.UnitPrice}");
+                        Console.WriteLine($"Totalpris: {c.TotalPrice}");
+                    }
+                }
+                var payment = db.Payments.Where(p => p.Id == paymentId);
+                var shipping = db.Shippings.Where(s => s.Id == shippingId);
+                foreach (var p in payment)
+                {
+                    Console.WriteLine($"Betalningssätt: {(p.PaymentOption == true ? "Kort" : "Faktura")}");
+                }
+                foreach (var s in shipping)
+                {
+                    Console.WriteLine($"Fraktssätt: {(s.DeliveryOption == true ? "Hemleverans" : "Ombud")}");
+                    Console.WriteLine($"Pris för frakt: {s.ShippingPrice}");
+                }
             }
         }
         public int SetShippingOptions()
@@ -107,7 +142,7 @@ namespace Webbshoppen.Pages
                     ConsoleUtils.WaitForKeyPress();
                     SetShippingOptions();
                 }
-
+                
                 var shippingId = db.Shippings.Select(x => x.Id).Max().ToString();
 
                 return Convert.ToInt32(shippingId);

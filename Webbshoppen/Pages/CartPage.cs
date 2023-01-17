@@ -34,7 +34,7 @@ namespace Webbshoppen.Pages
             bool running = true;
             while (running)
             {
-                int userid = 1; //TODO: Userid hårdkodat
+                int userid = 2; //TODO: Userid hårdkodat
                 string prompt = $"Varukorg\n";
                 string[] options = Enum.GetNames(typeof(CartOptions));
 
@@ -62,7 +62,7 @@ namespace Webbshoppen.Pages
                         break;
                     case 4:
                         CheckOutPage checkOut = new();
-                        //Checkout
+                        checkOut.Run();
                         break;
                     case 5:
                         ShowProductsInCart(userid);

@@ -78,7 +78,7 @@ namespace Webbshoppen.Pages
                 {
                     case 0:
                         //OrderPage orderPage = new();
-                        // orderPage.Run();
+                        //orderPage.Run();
                         break;
                     case 1:
                     case 2:
@@ -145,7 +145,6 @@ namespace Webbshoppen.Pages
                 Run();
             }
         }
-
         public void ShowOrders(int userid)
         {
             using (var db = new MyDbContext())
@@ -171,5 +170,6 @@ namespace Webbshoppen.Pages
                 }
             }
         }
+
     }
 }
