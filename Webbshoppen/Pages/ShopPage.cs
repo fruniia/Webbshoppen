@@ -49,7 +49,7 @@ namespace Webbshoppen.Pages
                         //Shoppa
                         product.ShowProductsCategory();
                         int productId = ConsoleUtils.GetIntFromUser($"Ange nummer för produkten du vill köpa: ");
-                        int userId = 1; //TODO: Eventuellt ändra - Hårdkodat!
+                        int userId = 2; //TODO: Eventuellt ändra - Hårdkodat!
                         ShopProduct(productId, userId);
                         break;
                     case 1:
@@ -60,11 +60,12 @@ namespace Webbshoppen.Pages
                         cart.Run();
                         break;
                     case 3:
-                        CheckOutPage co = new();
-                        co.Run();
+                        CheckOutPage checkOut = new();
+                        checkOut.Run();
                         break;
                     case 4:
-                        //TODO: Mina_sidor,
+                        UserPage userPage= new ();
+                        userPage.Run();
                         break;
                     case 5:
                         running = false;

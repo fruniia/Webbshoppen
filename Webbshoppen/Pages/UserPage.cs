@@ -48,8 +48,8 @@ namespace Webbshoppen.Pages
 
         public void LogInUser(int userid)
         {
-            using(var db = new MyDbContext()) 
-            { 
+            using (var db = new MyDbContext())
+            {
                 var userDetails = db.Users.Select(x => x).Where(x => x.Id == userid);
                 foreach (var value in userDetails)
                 {
@@ -59,7 +59,7 @@ namespace Webbshoppen.Pages
         }
 
         public enum UserMenu
-        { 
+        {
             Beställningshistorik,
             Ändra_förnamn,
             Ändra_efternamn,
@@ -93,11 +93,11 @@ namespace Webbshoppen.Pages
                         ChangeUserDetails(userid, selectedIndex);
                         break;
                     case 5:
-                        CartPage cartPage = new ();
+                        CartPage cartPage = new();
                         cartPage.Run();
                         break;
                     case 6:
-                        ShopPage shopPage = new ();
+                        ShopPage shopPage = new();
                         shopPage.Run();
                         break;
                     case 7:
@@ -109,12 +109,12 @@ namespace Webbshoppen.Pages
             }
         }
         public void ChangeUserDetails(int userid, int selectedIndex)
-        { 
-            using(var db = new MyDbContext())
-            {   
+        {
+            using (var db = new MyDbContext())
+            {
                 var alterUser = (from u in db.Users
-                                    where u.Id == (userid)
-                                    select u).SingleOrDefault();
+                                 where u.Id == (userid)
+                                 select u).SingleOrDefault();
                 switch (selectedIndex)
                 {
                     case (int)UserMenu.Ändra_förnamn:
@@ -145,8 +145,10 @@ namespace Webbshoppen.Pages
                 }
                 else
                 {
-                    Run();
+                    Console.WriteLine("Uppgifterna ändrades inte");
                 }
+                ConsoleUtils.WaitForKeyPress();
+                Run();
             }
         }
 
@@ -161,9 +163,9 @@ namespace Webbshoppen.Pages
                 {
                     Console.WriteLine($"OrderId: {order.Id}");
                     foreach (var product in productOrder)
-                    { 
+                    {
                         //product.Orders; 
-                    
+
                     }
                 }
                 //foreach (var item in db.Orders.Include(x => x.Products)
