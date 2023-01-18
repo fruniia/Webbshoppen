@@ -21,9 +21,7 @@ namespace Webbshoppen.Pages
         {
             using (var db = new MyDbContext())
             {
-
-                //var total = db.OrderDetails.Select(x=>x);
-                //float totalPrice = 0;
+                float totalPrice = 0;
 
                 foreach (var o in db.OrderDetails.Include(p => p.Product).Include(o => o.Order).Where(p => p.Order.UserId == userid))
                 {
@@ -31,9 +29,15 @@ namespace Webbshoppen.Pages
                     Console.WriteLine($"Orderid: {o.Order.Id} Orderdatum: {o.Order.OrderDate}\n{o.Product.Name} Antal:[{o.Quantity}] Pris: {o.UnitPrice} kr Moms: {o.VAT} kr " +
                         $"Totalpris: {(o.UnitPrice * o.Quantity)}");
 
-                   // totalPrice = totalPrice + (o.UnitPrice * (float)o.Quantity);
-
                 }
+                Console.WriteLine("===============================");
+                foreach (var o in db.OrderDetails.Select(x => x))
+                {
+                    float sum = ((float)o.UnitPrice * (float)o.Quantity);
+                    totalPrice += sum;
+                }
+                Console.WriteLine($"Totalsumman: {totalPrice}");
+
             }
         }
         public void CreateOrder(int userid, int shippingId, int paymentId)

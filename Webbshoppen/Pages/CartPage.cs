@@ -87,10 +87,7 @@ namespace Webbshoppen.Pages
 
             foreach (Cart c in carts)
             {
-
-
                 Console.WriteLine($"[{c.ProductId}]\t\t{c.Quantity}\t{c.UnitPrice}\t\t{c.TotalPrice}");
-
             }
         }
         public List<Cart> GetProductsInCart(int userid)
