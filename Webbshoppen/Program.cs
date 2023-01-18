@@ -20,10 +20,6 @@ namespace Webbshoppen
             //cop.Run();
             //ProductPage pp = new();
             //pp.ShowSelectedProducts();
-
-
-
-
         }
 
     }

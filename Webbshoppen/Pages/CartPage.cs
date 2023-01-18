@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Reflection.Metadata.Ecma335;
+using System.Threading.Channels;
 
 namespace Webbshoppen.Pages
 {
@@ -39,6 +40,7 @@ namespace Webbshoppen.Pages
             {
                 int userid = 1; //TODO: Userid hårdkodat
                 string prompt = $"Varukorg\n";
+                Console.WriteLine("==================");
                 string[] options = Enum.GetNames(typeof(CartOptions));
 
                 Menu cartMenu = new Menu(prompt, options);
@@ -82,13 +84,18 @@ namespace Webbshoppen.Pages
 
         public void PrintCart(List<Cart> carts, List<Product> products)
         {
-            
+            Console.WriteLine();
             //TODO Lägg till produktnamn
-            Console.WriteLine($"ProduktId\tAntal\tStyckpris\tTotalpris");
+            Console.WriteLine($"Produktnamn\tAntal\tStyckpris\tTotalpris");
 
             foreach (Cart c in carts)
             {
-                Console.WriteLine($"[{c.ProductId}]\t\t{c.Quantity}\t{c.UnitPrice}\t\t{c.TotalPrice}");
+                var product = products.FirstOrDefault(p => p.Id == c.ProductId);
+
+                if (product != null)
+                {
+                    Console.WriteLine($"[{c.ProductId}]{product.Name}\t\t{c.Quantity}\t{c.UnitPrice}\t\t{c.TotalPrice}");
+                }
             }
             using (var db = new MyDbContext())
             {
@@ -120,7 +127,6 @@ namespace Webbshoppen.Pages
                 }
             }
             return carts;
-            //Priset visas och summan av produkterna visas längst ner
         }
         public void ChangeQuantityOfProduct(int productId, int userId, int quantity)
         {
@@ -188,10 +194,6 @@ namespace Webbshoppen.Pages
                 }
                 db.SaveChanges();
             };
-        }
-        public void GoToCheckOut()
-        {
-            //Skicka med varukorgen till CheckOut
         }
     }
 }

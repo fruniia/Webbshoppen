@@ -23,7 +23,7 @@ namespace Webbshoppen.Pages
             Ändra_efternamn,
             Ändra_emailadress,
             Ändra_lösenord,
-            Visa_varukorg,
+            Gå_till_varukorg,
             Shoppa,
             Avsluta
         }
@@ -32,7 +32,7 @@ namespace Webbshoppen.Pages
         {
             string emailaddress = ConsoleUtils.GetStringFromUser("Ange e-postadress: ");
             string password = ConsoleUtils.GetStringFromUser("Ange lösenord: ");
-            int userid = 1;
+            int userid = 0;
             using (var db = new MyDbContext())
             {
                 var getUserId = db.Users.Where(x => x.Email == emailaddress && x.Password == password)

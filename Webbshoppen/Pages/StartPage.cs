@@ -26,11 +26,11 @@ namespace Webbshoppen.Pages
 
         public void Run()
         {
+            UserPage userPage = new();
             string prompt = ("Välkommen till Webshoppen");
             string[] startOptions = Enum.GetNames(typeof(StartMenu));
             Menu startMenu = new Menu(prompt, startOptions);
             int selectedIndex = startMenu.Run();
-
             switch (selectedIndex)
             {
                 case 0:
@@ -38,11 +38,10 @@ namespace Webbshoppen.Pages
                     a.Run();
                     break;
                 case 1:
-                    UserPage userPage= new ();
                     userPage.Run();
                     break;
                 case 2:
-                   // Shoppa som gäst
+                    userPage.Run();
                     break;
                 case 3:
                     ConsoleUtils.QuitConsole();

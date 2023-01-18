@@ -64,7 +64,7 @@ namespace Webbshoppen.Pages
                         checkOut.Run();
                         break;
                     case 4:
-                        UserPage userPage= new ();
+                        UserPage userPage = new();
                         userPage.Run();
                         break;
                     case 5:
@@ -78,7 +78,7 @@ namespace Webbshoppen.Pages
         }
         public void SearchProduct()
         {
-            var description = ConsoleUtils.GetStringFromUser("Sök efter produkt beskrivning: ");
+            var description = ConsoleUtils.GetStringFromUser("Sök efter produkt: ");
             using (var db = new MyDbContext())
             {
                 var result = from p in db.Products
@@ -87,11 +87,13 @@ namespace Webbshoppen.Pages
 
                 foreach (var product in result)
                 {
-                    Console.WriteLine($"{product.Name} {product.UnitPrice} ");
+
+                    Console.WriteLine($"{product.Name}\t {product.UnitPrice}\t{product.Description} ");
+
                 }
+                ConsoleUtils.WaitForKeyPress();
+                Console.Clear();
             }
-            ConsoleUtils.WaitForKeyPress();
-            Console.Clear();
         }
         public void ShopProduct(int productId, int userId)
         {
@@ -99,7 +101,6 @@ namespace Webbshoppen.Pages
             var quantityAnswer = ConsoleUtils.GetStringFromUser($"Vill du lägga in {quantity} st? j/n: ");
             using (var db = new MyDbContext())
             {
-                //var cart = db.Carts;
                 var product = (from p in db.Products
                                where p.Id == (productId)
                                select p).SingleOrDefault();
@@ -127,3 +128,4 @@ namespace Webbshoppen.Pages
         }
     }
 }
+

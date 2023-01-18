@@ -65,6 +65,7 @@ namespace Webbshoppen
         {
             Console.WriteLine("(Tryck valfri tangent för att avsluta.)");
             Console.ReadKey(true);
+            int userId = 0;
             Environment.Exit(0);
         }
 
