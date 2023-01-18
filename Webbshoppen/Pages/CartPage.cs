@@ -15,6 +15,7 @@ namespace Webbshoppen.Pages
 {
     internal class CartPage
     {
+        ProductPage p = new();
         ShopPage MyShopPage = new();
         List<Product> products = new List<Product>();
         List<Cart> carts = new List<Cart>();
@@ -43,7 +44,8 @@ namespace Webbshoppen.Pages
                 Menu cartMenu = new Menu(prompt, options);
                 int selectedIndex = cartMenu.Run();
 
-                ProductPage p = new();
+
+
                 products = p.GetAllProducts();
                 carts = GetProductsInCart(userid);
                 switch (selectedIndex)
@@ -78,15 +80,16 @@ namespace Webbshoppen.Pages
             }
         }
 
-        public void PrintCart(List<Cart> cart, List<Product> products)
+        public void PrintCart(List<Cart> carts, List<Product> products)
         {
             //TODO Lägg till produktnamn
-            Console.WriteLine($"Produkt\t\tAntal\tStyckpris\tTotalpris");
+            Console.WriteLine($"ProduktId\tAntal\tStyckpris\tTotalpris");
 
             foreach (Cart c in carts)
             {
-                
-                Console.WriteLine($"[{c.ProductId}]\t{c.Quantity}\t{c.UnitPrice}\t\t{c.TotalPrice}");
+
+
+                Console.WriteLine($"[{c.ProductId}]\t\t{c.Quantity}\t{c.UnitPrice}\t\t{c.TotalPrice}");
 
             }
         }
@@ -99,13 +102,11 @@ namespace Webbshoppen.Pages
                              join p in db.Products on c.ProductId equals p.Id
                              where c.UserId == userid
                              select c).ToList();
-                for (int i = 0; i < query.Count; i++)
+                for (int i = 0; i < 1; i++)
                 {
                     //Lägg in varje element från query till carts
-                    if (query[i].ProductId != query[i].ProductId)
-                    { 
-                        carts.AddRange(query);
-                    }
+                    carts.AddRange(query);
+
                 }
             }
             return carts;

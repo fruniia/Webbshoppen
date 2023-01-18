@@ -52,7 +52,6 @@ namespace Webbshoppen.Pages
                     break;
                 case 2:
                     shippingId = SetShippingOptions();
-                    
                     Run();
                     break;
                 case 3:
@@ -61,6 +60,15 @@ namespace Webbshoppen.Pages
                     Run();
                     break;
                 case 4:
+                    OrderPage o = new();
+                    CartPage c = new();
+                    List<Cart>carts = c.GetProductsInCart(userid);
+
+                    o.CreateOrder(userid, shippingId, paymentId);
+                    int orderId = o.GetCurrentOrder();
+                    o.CreateOrderDetails(orderId, carts);
+                    c.EmptyCartFromProducts(userid);
+                    
                     //betala
                     //Kolla så att userid != null
                     //Om null

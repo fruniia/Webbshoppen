@@ -13,8 +13,7 @@ namespace Webbshoppen.Models
     public class Order
     {
         public int Id { get; set; }
-        public int OrderDate { get; set; }
-
+        public string OrderDate { get; set; }
         public int PaymentId { get; set; }
         public int ShippingId { get; set; }
         public int UserId { get; set; }

@@ -31,8 +31,8 @@ namespace Webbshoppen.Pages
                         Console.WriteLine($"Betalningssätt: {(i.Payment.PaymentOption == true ? "Kort" : "Faktura")}");
                         Console.WriteLine($"Fraktssätt: {(i.Shipping.DeliveryOption == true ? "Hemleverans" : "Ombud")}");
                         Console.WriteLine($"Pris för frakt: {i.Shipping.ShippingPrice}");
-                       
-                        foreach(var p in i.Products)
+
+                        foreach (var p in i.Products)
                         {
                             Console.WriteLine($"{p.Name}");
                         }
@@ -46,35 +46,52 @@ namespace Webbshoppen.Pages
                 }
             }
         }
-
-
-        public void CreateOrder(int userId, int shippingId, int paymentId)
+        public void CreateOrder(int userid, int shippingId, int paymentId)
         {
-            // orderDetjels = Id, userId , datum, shipping, payment
-            // Order = OrderId (orderdetjalsId) , produkt , moms, quantity, UnitPrice, 
+            DateTime date = new DateTime();
+            date = DateTime.Now;
 
             using (var db = new MyDbContext())
             {
-                //var cart = from c in db.Carts
-                //           join p in db.Products on c.ProductId equals p.Id
-                //           where c.UserId == userId
-                //           select new
-                //           {
-                //               QuantityX = c.Quantity,
-                //               UnitPrice = c.UnitPrice,
-                //               TotalPrice = c.TotalPrice,
+                var order = new Order
+                {
+                    OrderDate = date.Year + "" + date.Month + "" + date.Day,
+                    ShippingId = shippingId,
+                    PaymentId = paymentId,
+                    UserId = userid
+                };
+                db.Add(order);
+                db.SaveChanges();
+            }
 
-                //           };
-                //if (cart != null)
-                //{
-                //    var order = new Order
-                //    {
-                //       ShippingId = shippingId
-                        
-                        
-                //    };
+        }
+        public int GetCurrentOrder()
+        {
+            using (var db = new MyDbContext()) 
+            {
+                var orderId = db.Orders.Select(x => x.Id).Max().ToString();
 
-                //}
+                return Convert.ToInt32(orderId);
+            }
+        }
+        public void CreateOrderDetails(int orderId, List<Cart> carts)
+        {
+            using (var db = new MyDbContext())
+            {
+
+                foreach (Cart c in carts)
+                {
+                    var orderDetail = new OrderDetail
+                    {
+                        ProductId = c.ProductId,
+                        Quantity = c.Quantity,
+                        UnitPrice = c.UnitPrice,
+                        VAT = (c.UnitPrice * (float)0.2),
+                        OrderId = orderId,
+                    };
+                    db.Add(orderDetail);
+                    db.SaveChanges();
+                }
             }
         }
     }

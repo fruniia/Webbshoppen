@@ -12,11 +12,11 @@ namespace Webbshoppen
             //Console.CursorVisible = false;
             //StartPage sp = new StartPage();
             ////p.Run();
-            //ShopPage shopPage = new();
-            //shopPage.Run();
-            CartPage cartPage = new();
-            cartPage.Run();
-            //CheckOutPage cop = new();          
+            ShopPage shopPage = new();
+            shopPage.Run();
+            //CartPage cartPage = new();
+            //cartPage.Run();
+            //CheckOutPage cop = new();
             //cop.Run();
             //ProductPage pp = new();
             //pp.ShowSelectedProducts();

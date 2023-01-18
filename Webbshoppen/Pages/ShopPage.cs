@@ -82,7 +82,7 @@ namespace Webbshoppen.Pages
             using (var db = new MyDbContext())
             {
                 var result = from p in db.Products
-                             where p.Description == description
+                             where p.Description.Contains(description) || p.Name.Contains(description)
                              select p;
 
                 foreach (var product in result)
