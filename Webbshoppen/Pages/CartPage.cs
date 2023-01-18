@@ -82,6 +82,7 @@ namespace Webbshoppen.Pages
 
         public void PrintCart(List<Cart> carts, List<Product> products)
         {
+            
             //TODO Lägg till produktnamn
             Console.WriteLine($"ProduktId\tAntal\tStyckpris\tTotalpris");
 
@@ -89,6 +90,18 @@ namespace Webbshoppen.Pages
             {
                 Console.WriteLine($"[{c.ProductId}]\t\t{c.Quantity}\t{c.UnitPrice}\t\t{c.TotalPrice}");
             }
+            using (var db = new MyDbContext())
+            {
+                float totalPrice = 0;
+                foreach (var o in db.Carts.Select(x => x))
+                {
+                    float sum = ((float)o.UnitPrice * (float)o.Quantity);
+                    totalPrice += sum;
+                }
+                Console.WriteLine($"===================\nTotalsumman: {totalPrice} kr");
+            }
+            ConsoleUtils.WaitForKeyPress();
+            Run();
         }
         public List<Cart> GetProductsInCart(int userid)
         {
