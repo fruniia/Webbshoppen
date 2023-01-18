@@ -22,27 +22,17 @@ namespace Webbshoppen.Pages
             using (var db = new MyDbContext())
             {
 
-                foreach (var item in db.Orders.Include(o => o.OrderDetails).Include(x => x.Products)
-                    .Where(x => x.UserId == userid).GroupBy(x => x.Id))
+                //var total = db.OrderDetails.Select(x=>x);
+                //float totalPrice = 0;
+
+                foreach (var o in db.OrderDetails.Include(p => p.Product).Include(o => o.Order).Where(p => p.Order.UserId == userid))
                 {
-                    foreach (var i in item)
-                    {
-                        Console.WriteLine($"Orderid: {i.Id} {i.OrderDate}");
-                        Console.WriteLine($"Betalningssätt: {(i.Payment.PaymentOption == true ? "Kort" : "Faktura")}");
-                        Console.WriteLine($"Fraktssätt: {(i.Shipping.DeliveryOption == true ? "Hemleverans" : "Ombud")}");
-                        Console.WriteLine($"Pris för frakt: {i.Shipping.ShippingPrice}");
+                    Console.WriteLine("========================");
+                    Console.WriteLine($"Orderid: {o.Order.Id} Orderdatum: {o.Order.OrderDate}\n{o.Product.Name} Antal:[{o.Quantity}] Pris: {o.UnitPrice} kr Moms: {o.VAT} kr " +
+                        $"Totalpris: {(o.UnitPrice * o.Quantity)}");
 
-                        foreach (var p in i.Products)
-                        {
-                            Console.WriteLine($"{p.Name}");
-                        }
-                        foreach (var o in i.OrderDetails)
-                        {
-                            Console.WriteLine($"Antal: {o.Quantity} Pris: {o.UnitPrice} Moms: {o.VAT} kr" +
-                                $"-Totalpris: {(o.UnitPrice * o.Quantity)}");
+                   // totalPrice = totalPrice + (o.UnitPrice * (float)o.Quantity);
 
-                        }
-                    }
                 }
             }
         }
@@ -67,7 +57,7 @@ namespace Webbshoppen.Pages
         }
         public int GetCurrentOrder()
         {
-            using (var db = new MyDbContext()) 
+            using (var db = new MyDbContext())
             {
                 var orderId = db.Orders.Select(x => x.Id).Max().ToString();
 

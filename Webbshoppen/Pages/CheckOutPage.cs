@@ -60,15 +60,26 @@ namespace Webbshoppen.Pages
                     Run();
                     break;
                 case 4:
-                    OrderPage o = new();
-                    CartPage c = new();
-                    List<Cart>carts = c.GetProductsInCart(userid);
 
-                    o.CreateOrder(userid, shippingId, paymentId);
-                    int orderId = o.GetCurrentOrder();
-                    o.CreateOrderDetails(orderId, carts);
-                    c.EmptyCartFromProducts(userid);
-                    
+                    if (userid > 0)
+                    {
+                        OrderPage o = new();
+                        CartPage c = new();
+                        List<Cart> carts = c.GetProductsInCart(userid);
+                        o.CreateOrder(userid, shippingId, paymentId);
+                        int orderId = o.GetCurrentOrder();
+                        o.CreateOrderDetails(orderId, carts);
+                        c.EmptyCartFromProducts(userid);
+
+                    }
+                    else
+                    {
+                       Console.WriteLine("===============\nDu behöver logga in först");
+                       ConsoleUtils.WaitForKeyPress();
+                       Run();
+
+                    }
+
                     //betala
                     //Kolla så att userid != null
                     //Om null
@@ -85,7 +96,7 @@ namespace Webbshoppen.Pages
         }
         public int GoToPayment(int userid, int shippingId)
         {
-            int paymentId= 0;
+            int paymentId = 0;
             using (var db = new MyDbContext())
             {
 
@@ -100,7 +111,7 @@ namespace Webbshoppen.Pages
                         Console.WriteLine($"Totalpris: {c.TotalPrice}");
                     }
                 }
-                
+
                 var shipping = db.Shippings.Where(s => s.Id == shippingId);
                 foreach (var s in shipping)
                 {
@@ -150,7 +161,7 @@ namespace Webbshoppen.Pages
                     ConsoleUtils.WaitForKeyPress();
                     SetShippingOptions();
                 }
-                
+
                 var shippingId = db.Shippings.Select(x => x.Id).Max().ToString();
 
                 return Convert.ToInt32(shippingId);

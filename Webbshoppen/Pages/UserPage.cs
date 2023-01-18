@@ -32,7 +32,7 @@ namespace Webbshoppen.Pages
         {
             string emailaddress = ConsoleUtils.GetStringFromUser("Ange e-postadress: ");
             string password = ConsoleUtils.GetStringFromUser("Ange lösenord: ");
-            int userid = 0;
+            int userid = 1;
             using (var db = new MyDbContext())
             {
                 var getUserId = db.Users.Where(x => x.Email == emailaddress && x.Password == password)
@@ -74,12 +74,12 @@ namespace Webbshoppen.Pages
 
                 Menu userMenu = new Menu(prompt, options);
                 int selectedIndex = userMenu.Run();
-                int userid = 2;
+                int userid = 1;
                 switch (selectedIndex)
                 {
                     case 0:
-                        //OrderPage orderPage = new();
-                        //orderPage.Run();
+                        OrderPage orderPage = new();
+                        orderPage.ShowOrders(userid);
                         break;
                     case 1:
                     case 2:
