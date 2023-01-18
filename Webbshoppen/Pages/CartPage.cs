@@ -8,12 +8,16 @@ using Webbshoppen.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Webbshoppen.Pages
 {
     internal class CartPage
     {
         ShopPage MyShopPage = new();
+        List<Product> products = new List<Product>();
+        List<Cart> carts = new List<Cart>();
         public enum CartOptions
         {
             Ändra_antal,
@@ -27,8 +31,6 @@ namespace Webbshoppen.Pages
         {
 
         }
-
-
         public void Run()
         {
             bool running = true;
@@ -41,16 +43,19 @@ namespace Webbshoppen.Pages
                 Menu cartMenu = new Menu(prompt, options);
                 int selectedIndex = cartMenu.Run();
 
+                ProductPage p = new();
+                products = p.GetAllProducts();
+                carts = GetProductsInCart(userid);
                 switch (selectedIndex)
                 {
                     case 0:
-                        ShowProductsInCart(userid);
+                        PrintCart(carts, products);
                         int productId = ConsoleUtils.GetIntFromUser("Ange produktid: ");
                         int quantity = ConsoleUtils.GetIntFromUser("Ange antal: ");
                         ChangeQuantityOfProduct(productId, userid, quantity);
                         break;
                     case 1:
-                        ShowProductsInCart(userid);
+                        PrintCart(carts, products);
                         productId = ConsoleUtils.GetIntFromUser("Ange produktid: ");
                         RemoveProductFromCart(productId, userid);
                         break;
@@ -65,34 +70,45 @@ namespace Webbshoppen.Pages
                         checkOut.Run();
                         break;
                     case 5:
-                        ShowProductsInCart(userid);
+                        PrintCart(carts, products);
                         ConsoleUtils.WaitForKeyPress();
                         break;
                 }
                 Console.ReadKey();
             }
         }
-        public void ShowProductsInCart(int userid)
+
+        public void PrintCart(List<Cart> cart, List<Product> products)
         {
+            //TODO Lägg till produktnamn
+            Console.WriteLine($"Produkt\t\tAntal\tStyckpris\tTotalpris");
+
+            foreach (Cart c in carts)
+            {
+                
+                Console.WriteLine($"[{c.ProductId}]\t{c.Quantity}\t{c.UnitPrice}\t\t{c.TotalPrice}");
+
+            }
+        }
+        public List<Cart> GetProductsInCart(int userid)
+        {
+            List<Cart> carts = new List<Cart>();
             using (var db = new MyDbContext())
             {
-                var query = from c in db.Carts
-                            join p in db.Products on c.ProductId equals p.Id
-                            where c.UserId == userid
-                            select new
-                            {
-                                Id = p.Id,
-                                ProductName = p.Name,
-                                Quantity = c.Quantity,
-                                UnitPrice = c.UnitPrice,
-                                TotalPrice = c.TotalPrice,
-                            };
-
-                foreach (var value in query)
+                var query = (from c in db.Carts
+                             join p in db.Products on c.ProductId equals p.Id
+                             where c.UserId == userid
+                             select c).ToList();
+                for (int i = 0; i < query.Count; i++)
                 {
-                    Console.WriteLine($"{value.Id}\t{value.ProductName}\t{value.Quantity}\t{value.UnitPrice}\t{value.TotalPrice}");
+                    //Lägg in varje element från query till carts
+                    if (query[i].ProductId != query[i].ProductId)
+                    { 
+                        carts.AddRange(query);
+                    }
                 }
             }
+            return carts;
             //Priset visas och summan av produkterna visas längst ner
         }
         public void ChangeQuantityOfProduct(int productId, int userId, int quantity)
@@ -121,9 +137,9 @@ namespace Webbshoppen.Pages
             using (var db = new MyDbContext())
             {
                 var productInCart = from c in db.Carts
-                                     join p in db.Products on c.ProductId equals p.Id
-                                     where c.ProductId == productId && c.UserId == userId
-                                     select c;
+                                    join p in db.Products on c.ProductId equals p.Id
+                                    where c.ProductId == productId && c.UserId == userId
+                                    select c;
                 if (productInCart != null)
                 {
                     db.Carts.RemoveRange(productInCart);
@@ -162,7 +178,6 @@ namespace Webbshoppen.Pages
                 db.SaveChanges();
             };
         }
-
         public void GoToCheckOut()
         {
             //Skicka med varukorgen till CheckOut

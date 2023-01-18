@@ -32,5 +32,22 @@ namespace Webbshoppen.Pages
                 }
             }
         }
+        public List<Product> GetAllProducts()
+        { 
+            List<Product> productList = new List<Product>();
+
+            using (var db = new MyDbContext())
+            {
+                var products = (from p in db.Products
+                                select p).ToList();
+
+                for (int i = 0; i < products.Count; i++)
+                {
+                    productList.AddRange(products);
+                }
+            }
+            return productList;
+        }
+        
     }
 }

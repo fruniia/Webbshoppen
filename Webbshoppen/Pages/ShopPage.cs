@@ -53,7 +53,7 @@ namespace Webbshoppen.Pages
                         ShopProduct(productId, userId);
                         break;
                     case 1:
-                        //TODO: Sök,
+                        SearchProduct();
                         break;
                     case 2:
                         CartPage cart = new();
@@ -76,7 +76,23 @@ namespace Webbshoppen.Pages
                 Console.ReadKey();
             }
         }
+        public void SearchProduct()
+        {
+            var description = ConsoleUtils.GetStringFromUser("Sök efter produkt beskrivning: ");
+            using (var db = new MyDbContext())
+            {
+                var result = from p in db.Products
+                             where p.Description == description
+                             select p;
 
+                foreach (var product in result)
+                {
+                    Console.WriteLine($"{product.Name} {product.UnitPrice} ");
+                }
+            }
+            ConsoleUtils.WaitForKeyPress();
+            Console.Clear();
+        }
         public void ShopProduct(int productId, int userId)
         {
             int quantity = ConsoleUtils.GetIntFromUser($"Ange antal: ");

@@ -14,6 +14,13 @@ namespace Webbshoppen
             string result = Console.ReadLine();
             return result;
         }
+        public static void PrintCart<T>(List<T> list)
+        { 
+            foreach (var item in list)
+            {
+                Console.WriteLine(item);
+            }
+        }
         public static int GetIntFromUser(string prompt)
         {
             bool isValid = true;
