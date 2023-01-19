@@ -179,6 +179,7 @@ namespace Webbshoppen.Pages
                     if (answer.Trim().ToLower().StartsWith("j"))
                     {
                         db.Carts.RemoveRange(productInCart);
+                        db.SaveChanges();
                         return true;
                     }
                     else
@@ -192,7 +193,6 @@ namespace Webbshoppen.Pages
                     Console.WriteLine("Varukorgen tömdes inte.");
                     return false;
                 }
-                db.SaveChanges();
             };
         }
     }

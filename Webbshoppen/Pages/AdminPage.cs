@@ -77,7 +77,8 @@ namespace Webbshoppen.Pages
                         RemoveCategory();
                         break;
                     case 11:
-                        //TODO: Statistics
+                        StatisticPage statisticPage = new();
+                        statisticPage.Run();
                         break;
                     case 12:
                         startPage.Run();

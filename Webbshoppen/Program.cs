@@ -7,7 +7,6 @@ namespace Webbshoppen
     {
         static void Main(string[] args)
         {
-
             Console.Title = "~M-A-M~";
             Console.CursorVisible = false;
             StartPage startPage = new StartPage();

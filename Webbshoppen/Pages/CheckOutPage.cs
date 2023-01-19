@@ -26,7 +26,6 @@ namespace Webbshoppen.Pages
         public enum Checkout
         {
             Shoppa,
-            Logga_in,
             Välj_frakt_och_betalningsalternativ,
             Betala,
             Avsluta
@@ -45,17 +44,12 @@ namespace Webbshoppen.Pages
                     sp.Run();
                     break;
                 case 1:
-                    UserPage up = new();
-                    userid = up.CheckUserDetails();
-                    up.LogInUser(userid);
-                    break;
-                case 2:
                     shippingId = SetShippingOptions();
                     paymentId = GoToPayment(userid, shippingId);
                     ConsoleUtils.WaitForKeyPress();
                     Run();
                     break;
-                case 3:
+                case 2:
                     OrderPage o = new();
                     CartPage c = new();
                     List<Cart> carts = c.GetProductsInCart(userid);
@@ -67,7 +61,7 @@ namespace Webbshoppen.Pages
                     ConsoleUtils.WaitForKeyPress();
                     Run();
                     break;
-                case 5:
+                case 3:
                     ConsoleUtils.QuitConsole();
                     break;
             }
