@@ -45,7 +45,6 @@ namespace Webbshoppen.Pages
                 switch (selectedIndex)
                 {
                     case 0:
-                        //Shoppa
                         product.ShowProductsCategory();
                         SelectProduct(userId);
                         break;
@@ -101,6 +100,7 @@ namespace Webbshoppen.Pages
             {
                 Console.WriteLine("Inget giltigt alternativ");
                 ConsoleUtils.WaitForKeyPress();
+                SelectProduct(userId);
             }
         }
         public void ShowOneProduct(int productId)
@@ -122,14 +122,15 @@ namespace Webbshoppen.Pages
                              where p.Description.Contains(description) || p.Name.Contains(description)
                              select p;
 
+                string[] beskrivning = { "Produkt", "Pris", "Beskrivning" };
+
+                Console.WriteLine();
+                Console.WriteLine($"{beskrivning[0].PadRight(15)}{beskrivning[1].PadRight(9)}{beskrivning[2].PadRight(9)}");
                 foreach (var product in result)
                 {
-
-                    Console.WriteLine($"{product.Name}\t {product.UnitPrice}\t{product.Description} ");
-
+                    Console.WriteLine($"{product.Name.PadRight(15)}{product.UnitPrice} kr\t{product.Description.PadRight(9)}");
                 }
                 ConsoleUtils.WaitForKeyPress();
-                Console.Clear();
             }
         }
         public void ShopProduct(int productId, int userId)

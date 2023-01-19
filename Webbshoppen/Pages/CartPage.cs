@@ -22,12 +22,12 @@ namespace Webbshoppen.Pages
         List<Cart> carts = new List<Cart>();
         public enum CartOptions
         {
+            Visa_varukorg,
             Ändra_antal,
             Ta_bort_produkt,
             Töm_varukorg,
             Fortsätt_shoppa,
-            Gå_till_betalning,
-            Visa_varukorg
+            Gå_till_betalning
         }
         public CartPage()
         {
@@ -46,55 +46,51 @@ namespace Webbshoppen.Pages
                 Menu cartMenu = new Menu(prompt, options);
                 int selectedIndex = cartMenu.Run();
 
-
-
                 products = p.GetAllProducts();
                 carts = GetProductsInCart(userid);
                 switch (selectedIndex)
                 {
                     case 0:
                         PrintCart(carts, products);
+                        ConsoleUtils.WaitForKeyPress();
+                        break;
+                    case 1:
+                        PrintCart(carts, products);
                         int productId = ConsoleUtils.GetIntFromUser("Ange produktid: ");
                         int quantity = ConsoleUtils.GetIntFromUser("Ange antal: ");
                         ChangeQuantityOfProduct(productId, userid, quantity);
                         break;
-                    case 1:
+                    case 2:
                         PrintCart(carts, products);
                         productId = ConsoleUtils.GetIntFromUser("Ange produktid: ");
                         RemoveProductFromCart(productId, userid);
                         break;
-                    case 2:
+                    case 3:
                         EmptyCartFromProducts(userid);
                         break;
-                    case 3:
+                    case 4:
                         MyShopPage.Run();
                         break;
-                    case 4:
+                    case 5:
                         CheckOutPage checkOut = new();
                         checkOut.Run();
-                        break;
-                    case 5:
-                        PrintCart(carts, products);
-                        ConsoleUtils.WaitForKeyPress();
                         break;
                 }
                 Console.ReadKey();
             }
         }
-
         public void PrintCart(List<Cart> carts, List<Product> products)
         {
+            string[] beskrivning = { "Produktnamn", "Antal", "Pris", "Totalpris"};
             Console.WriteLine();
-            //TODO Lägg till produktnamn
-            Console.WriteLine($"Produktnamn\tAntal\tStyckpris\tTotalpris");
+            Console.WriteLine($"{beskrivning[0].PadRight(25)}{beskrivning[1].PadRight(7)}{beskrivning[2].PadRight(6)}{beskrivning[3]}");
 
             foreach (Cart c in carts)
             {
                 var product = products.FirstOrDefault(p => p.Id == c.ProductId);
-
                 if (product != null)
                 {
-                    Console.WriteLine($"[{c.ProductId}]{product.Name}\t\t{c.Quantity}\t{c.UnitPrice}\t\t{c.TotalPrice}");
+                    Console.WriteLine($"[{c.ProductId}]{product.Name.PadRight(24)}{c.Quantity}\t{c.UnitPrice}\t{c.TotalPrice}");
                 }
             }
             using (var db = new MyDbContext())
@@ -107,6 +103,7 @@ namespace Webbshoppen.Pages
                 }
                 Console.WriteLine($"===================\nTotalsumman: {totalPrice} kr");
             }
+            Console.WriteLine();
             ConsoleUtils.WaitForKeyPress();
             Run();
         }
@@ -121,9 +118,7 @@ namespace Webbshoppen.Pages
                              select c).ToList();
                 for (int i = 0; i < 1; i++)
                 {
-                    //Lägg in varje element från query till carts
                     carts.AddRange(query);
-
                 }
             }
             return carts;
@@ -168,10 +163,12 @@ namespace Webbshoppen.Pages
                 db.SaveChanges();
             };
         }
-        public void EmptyCartFromProducts(int userId)
+        public bool EmptyCartFromProducts(int userId)
         {
+            GetProductsInCart(userId);
             using (var db = new MyDbContext())
             {
+                
                 var productInCart = from c in db.Carts
                                     join p in db.Products on c.ProductId equals p.Id
                                     where c.UserId == userId
@@ -182,15 +179,18 @@ namespace Webbshoppen.Pages
                     if (answer.Trim().ToLower().StartsWith("j"))
                     {
                         db.Carts.RemoveRange(productInCart);
+                        return true;
                     }
                     else
                     {
                         Console.WriteLine("Varukorgen tömdes inte");
+                        return false;
                     }
                 }
                 else
                 {
                     Console.WriteLine("Varukorgen tömdes inte.");
+                    return false;
                 }
                 db.SaveChanges();
             };

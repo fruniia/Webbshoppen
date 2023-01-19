@@ -11,6 +11,8 @@ namespace Webbshoppen.Pages
 {
     internal class CheckOutPage
     {
+        int shippingId = 0;
+        int paymentId = 0;
         public enum Payment
         {
             Kort = 1,
@@ -25,8 +27,7 @@ namespace Webbshoppen.Pages
         {
             Shoppa,
             Logga_in,
-            Välj_fraktalternativ,
-            Välj_betalningsalternativ,
+            Välj_frakt_och_betalningsalternativ,
             Betala,
             Avsluta
         }
@@ -36,8 +37,6 @@ namespace Webbshoppen.Pages
             string[] startOptions = Enum.GetNames(typeof(Checkout));
             Menu startMenu = new Menu(prompt, startOptions);
             int selectedIndex = startMenu.Run();
-            int shippingId = 1;
-            int paymentId = 1;
             int userid = 1;
             switch (selectedIndex)
             {
@@ -52,40 +51,19 @@ namespace Webbshoppen.Pages
                     break;
                 case 2:
                     shippingId = SetShippingOptions();
-                    Run();
-                    break;
-                case 3:
                     paymentId = GoToPayment(userid, shippingId);
                     ConsoleUtils.WaitForKeyPress();
                     Run();
                     break;
-                case 4:
-
-                    if (userid > 0)
-                    {
-                        OrderPage o = new();
-                        CartPage c = new();
-                        List<Cart> carts = c.GetProductsInCart(userid);
-                        o.CreateOrder(userid, shippingId, paymentId);
-                        int orderId = o.GetCurrentOrder();
-                        o.CreateOrderDetails(orderId, carts);
-                        c.EmptyCartFromProducts(userid);
-
-                    }
-                    else
-                    {
-                       Console.WriteLine("===============\nDu behöver logga in först");
-                       ConsoleUtils.WaitForKeyPress();
-                       Run();
-
-                    }
-
-                    //betala
-                    //Kolla så att userid != null
-                    //Om null
-                    //Logga in
-                    //Betala skicka med shippingId och PaymentId och UserId
-
+                case 3:
+                    OrderPage o = new();
+                    CartPage c = new();
+                    List<Cart> carts = c.GetProductsInCart(userid);
+                    o.CreateOrder(userid, shippingId, paymentId);
+                    int orderId = o.GetCurrentOrder();
+                    o.CreateOrderDetails(orderId, carts);
+                    bool empty = c.EmptyCartFromProducts(userid);
+                    Console.WriteLine((empty == true ? "Tack för din order.\nOrderhistorik finns på dina sidor!" : "Varukorgen tömdes inte")); 
                     ConsoleUtils.WaitForKeyPress();
                     Run();
                     break;
@@ -97,27 +75,31 @@ namespace Webbshoppen.Pages
         public int GoToPayment(int userid, int shippingId)
         {
             int paymentId = 0;
+            float totalPriceInclShipping = 0;
             using (var db = new MyDbContext())
             {
-
                 foreach (var item in db.Products.Include(x => x.Carts.Where(c => c.UserId == userid)))
                 {
-
                     foreach (var c in item.Carts)
                     {
                         Console.WriteLine($"Produktnamn: {item.Name}");
                         Console.WriteLine($"Antal: {c.Quantity}");
                         Console.WriteLine($"Pris: {c.UnitPrice}");
                         Console.WriteLine($"Totalpris: {c.TotalPrice}");
+                        Console.WriteLine($"Inkl moms: {c.TotalPrice * 0.20}");
+                        Console.WriteLine();
+                        totalPriceInclShipping += (float)c.TotalPrice;
                     }
                 }
-
                 var shipping = db.Shippings.Where(s => s.Id == shippingId);
                 foreach (var s in shipping)
                 {
                     Console.WriteLine($"Fraktssätt: {(s.DeliveryOption == true ? "Hemleverans" : "Ombud")}");
                     Console.WriteLine($"Pris för frakt: {s.ShippingPrice}");
+                    totalPriceInclShipping += (float)s.ShippingPrice;
                 }
+                Console.WriteLine();
+                Console.WriteLine($"Totalpris inkl frakt: {totalPriceInclShipping}");
             }
             paymentId = SetPaymentOptions();
 
@@ -161,7 +143,7 @@ namespace Webbshoppen.Pages
                     ConsoleUtils.WaitForKeyPress();
                     SetShippingOptions();
                 }
-
+                Console.WriteLine();
                 var shippingId = db.Shippings.Select(x => x.Id).Max().ToString();
 
                 return Convert.ToInt32(shippingId);
@@ -199,7 +181,7 @@ namespace Webbshoppen.Pages
                 db.SaveChanges();
 
                 var paymentId = db.Payments.Select(x => x.Id).Max().ToString();
-
+                Console.WriteLine();
                 return Convert.ToInt32(paymentId);
             }
         }

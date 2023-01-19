@@ -15,7 +15,6 @@ namespace Webbshoppen.Data
     {
         public void AddProducts()
         {
-
             using (var context = new MyDbContext())
             {
                 context.AddRange(
@@ -177,7 +176,6 @@ namespace Webbshoppen.Data
                //context.SaveChanges();
             }
         }
-
         public void ShowProducts()
         {
             using (var db = new MyDbContext())
@@ -203,7 +201,6 @@ namespace Webbshoppen.Data
                 }
             }
         }
-
         public void ShowProductsCategory()
         {
             using (var db = new MyDbContext())

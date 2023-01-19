@@ -11,11 +11,6 @@ namespace Webbshoppen.Pages
 {
     internal class OrderPage
     {
-        //Quantity
-        //Orderdate
-        //Totalprice
-        //VAT
-        //UserId
         int userid = 1;
         public void ShowOrders(int userid)
         {
@@ -37,25 +32,33 @@ namespace Webbshoppen.Pages
                     totalPrice += sum;
                 }
                 Console.WriteLine($"Totalsumman: {totalPrice}");
-
             }
         }
         public void CreateOrder(int userid, int shippingId, int paymentId)
         {
+            CheckOutPage checkOutPage = new();
             DateTime date = new DateTime();
             date = DateTime.Now;
-
-            using (var db = new MyDbContext())
+            if (userid > 0 && shippingId > 0 && paymentId > 0)
             {
-                var order = new Order
+                using (var db = new MyDbContext())
                 {
-                    OrderDate = date.Year + "" + date.Month + "" + date.Day,
-                    ShippingId = shippingId,
-                    PaymentId = paymentId,
-                    UserId = userid
-                };
-                db.Add(order);
-                db.SaveChanges();
+                    var order = new Order
+                    {
+                        OrderDate = date.Year + "" + date.Month + "" + date.Day,
+                        ShippingId = shippingId,
+                        PaymentId = paymentId,
+                        UserId = userid
+                    };
+                    db.Add(order);
+                    db.SaveChanges();
+                }
+            }
+            else
+            {
+                Console.WriteLine("===============\nDu behöver välja betalnings- och fraktalternativ");
+                ConsoleUtils.WaitForKeyPress();
+                checkOutPage.Run();
             }
 
         }
