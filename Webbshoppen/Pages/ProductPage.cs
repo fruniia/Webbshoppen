@@ -10,13 +10,12 @@ namespace Webbshoppen.Pages
 {
     internal class ProductPage
     {
-        //Visa vald produkt med information, pris, storlek
-
-        public void ShowSelectedProducts()
+        public string ShowSelectedProducts()
         {
+            string showSelectedProducts = string.Empty;
             using(var db = new MyDbContext())
             {
-                var products = from p in db.Products
+                var products = (from p in db.Products
                                join s in db.Suppliers on p.SupplierId equals s.Id
                                where p.Selected == true
                                select new
@@ -24,12 +23,13 @@ namespace Webbshoppen.Pages
                                    SelectedName = p.Name,
                                    SupplierName = s.Name,
                                    UnitPrice = p.UnitPrice
-                               };
+                               }).ToList().Take(3);
                 foreach(var selected in products)
                 {
-                    Console.Write($"{selected.SelectedName}\n {selected.SupplierName} \n {selected.UnitPrice}:-\n");
-                    Console.WriteLine();
+                    showSelectedProducts += $"{selected.SelectedName}\t{selected.SupplierName.PadRight(15)}{(selected.UnitPrice)} kr\t\n";
+                    
                 }
+                return showSelectedProducts;
             }
         }
         public List<Product> GetAllProducts()

@@ -15,22 +15,21 @@ namespace Webbshoppen.Pages
     }
     internal class StartPage
     {
-        //Välkomsttext
-        //Tre utvald produkter
-        //Inloggning
-
         public StartPage()
         {
 
         }
-
         public void Run()
         {
             UserPage userPage = new();
-            string prompt = ("Välkommen till Webshoppen");
+            ShopPage shopPage = new();
+            string prompt = ("Webshop ~M-A-M~\n\n");
+            prompt += PrintWelcomeMessage();
+            Console.WriteLine();
             string[] startOptions = Enum.GetNames(typeof(StartMenu));
             Menu startMenu = new Menu(prompt, startOptions);
             int selectedIndex = startMenu.Run();
+            PrintWelcomeMessage();
             switch (selectedIndex)
             {
                 case 0:
@@ -41,13 +40,18 @@ namespace Webbshoppen.Pages
                     userPage.Run();
                     break;
                 case 2:
-                    userPage.Run();
+                    shopPage.Run();
                     break;
                 case 3:
                     ConsoleUtils.QuitConsole();
                     break;
             }
         }
-
+        public static string PrintWelcomeMessage()
+        {
+            ProductPage product = new();
+            string startMessage = product.ShowSelectedProducts();
+            return startMessage;
+        }
     }
 }

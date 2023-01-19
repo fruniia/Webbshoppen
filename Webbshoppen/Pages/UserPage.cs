@@ -14,8 +14,6 @@ namespace Webbshoppen.Pages
 {
     internal class UserPage
     {
-        //TODO: Ändra uppgift om kunden
-        //TODO: Beställningshistorik
         public enum UserMenu
         {
             Beställningshistorik,
@@ -27,12 +25,62 @@ namespace Webbshoppen.Pages
             Shoppa,
             Avsluta
         }
+        public void Run()
+        {
+            StartPage startPage = new();
+            int userid = CheckUserDetails();
+            if (userid != 0)
+            {
+                bool running = true;
+                while (running)
+                {
+                    string userName = LogInUser(userid);
+                    string prompt = $"Mina sidor\n{userName}";
+                    string[] options = Enum.GetNames(typeof(UserMenu));
 
+                    Menu userMenu = new Menu(prompt, options);
+                    int selectedIndex = userMenu.Run();
+                    switch (selectedIndex)
+                    {
+                        case 0:
+                            OrderPage orderPage = new();
+                            orderPage.ShowOrders(userid);
+                            break;
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                            ChangeUserDetails(userid, selectedIndex);
+                            break;
+                        case 5:
+                            CartPage cartPage = new();
+                            cartPage.Run();
+                            break;
+                        case 6:
+                            ShopPage shopPage = new();
+                            shopPage.Run();
+                            break;
+                        case 7:
+                            running = false;
+                            ConsoleUtils.QuitConsole();
+                            break;
+                    }
+                    Console.ReadKey();
+                }
+            }
+            else
+            {
+                Console.WriteLine("Du loggades inte in. Du kommer tillbaka till startsida");
+                ConsoleUtils.WaitForKeyPress();
+                startPage.Run();
+            }
+        }
         public int CheckUserDetails()
         {
             string emailaddress = ConsoleUtils.GetStringFromUser("Ange e-postadress: ");
             string password = ConsoleUtils.GetStringFromUser("Ange lösenord: ");
             int userid = 0;
+            StartPage startPage = new StartPage();
             using (var db = new MyDbContext())
             {
                 var getUserId = db.Users.Where(x => x.Email == emailaddress && x.Password == password)
@@ -45,63 +93,23 @@ namespace Webbshoppen.Pages
                         Console.Clear();
                         Console.WriteLine("Dina inloggningsuppgifter stämmer inte. Försök igen.");
                         ConsoleUtils.WaitForKeyPress();
-                        CheckUserDetails();
                     }
                 }
                 return userid;
             }
         }
-
-        public void LogInUser(int userid)
+        public string LogInUser(int userid)
         {
+            string userName = string.Empty;
             using (var db = new MyDbContext())
             {
                 var userDetails = db.Users.Select(x => x).Where(x => x.Id == userid);
                 foreach (var value in userDetails)
                 {
-                    Console.WriteLine($"Välkommen {value.FirstName}");
+                    userName = $"Välkommen {value.FirstName}";
                 }
             }
-        }
-
-        public void Run()
-        {
-            bool running = true;
-            while (running)
-            {
-                string prompt = "Mina sidor";
-                string[] options = Enum.GetNames(typeof(UserMenu));
-
-                Menu userMenu = new Menu(prompt, options);
-                int selectedIndex = userMenu.Run();
-                int userid = 1;
-                switch (selectedIndex)
-                {
-                    case 0:
-                        OrderPage orderPage = new();
-                        orderPage.ShowOrders(userid);
-                        break;
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                        ChangeUserDetails(userid, selectedIndex);
-                        break;
-                    case 5:
-                        CartPage cartPage = new();
-                        cartPage.Run();
-                        break;
-                    case 6:
-                        ShopPage shopPage = new();
-                        shopPage.Run();
-                        break;
-                    case 7:
-                        running = false;
-                        ConsoleUtils.QuitConsole();
-                        break;
-                }
-                Console.ReadKey();
-            }
+            return userName;
         }
         public void ChangeUserDetails(int userid, int selectedIndex)
         {
@@ -174,6 +182,5 @@ namespace Webbshoppen.Pages
                 }
             }
         }
-
     }
 }

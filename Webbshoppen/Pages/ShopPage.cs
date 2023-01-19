@@ -13,13 +13,6 @@ namespace Webbshoppen.Pages
 {
     internal class ShopPage
     {
-        //Visa minst tre kategorier
-        //Visa minst fem produkter av varje
-        //Möjlighet att frisöka
-        //Visa kort text om produkten
-        //Kunna välja mer information om produkten
-        //Lägg till produkten i ShopPage
-        //Pris
         CategoryManager category = new();
         ProductManager product = new();
         public enum ShopMenu
@@ -31,7 +24,14 @@ namespace Webbshoppen.Pages
             Mina_sidor,
             Avsluta
         }
-
+        public enum ProductMenu
+        {
+            Handla_produkt = 1,
+            Visa_mer_om_produkten
+        }
+        public ShopPage()
+        {
+        }
         public void Run()
         {
             bool running = true;
@@ -39,18 +39,15 @@ namespace Webbshoppen.Pages
             {
                 string prompt = "Vad vill du göra idag?";
                 string[] options = Enum.GetNames(typeof(ShopMenu));
-
                 Menu shopMenu = new Menu(prompt, options);
                 int selectedIndex = shopMenu.Run();
-
+                int userId = 1; //TODO: Eventuellt ändra - Hårdkodat!
                 switch (selectedIndex)
                 {
                     case 0:
                         //Shoppa
                         product.ShowProductsCategory();
-                        int productId = ConsoleUtils.GetIntFromUser($"Ange nummer för produkten du vill köpa: ");
-                        int userId = 1; //TODO: Eventuellt ändra - Hårdkodat!
-                        ShopProduct(productId, userId);
+                        SelectProduct(userId);
                         break;
                     case 1:
                         SearchProduct();
@@ -65,7 +62,15 @@ namespace Webbshoppen.Pages
                         break;
                     case 4:
                         UserPage userPage = new();
-                        userPage.Run();
+                        if (userId != 0)
+                        {
+                            userPage.LogInUser(userId);
+                            userPage.Run();
+                        }
+                        else
+                        {
+                            Run();
+                        }
                         break;
                     case 5:
                         running = false;
@@ -74,6 +79,38 @@ namespace Webbshoppen.Pages
 
                 }
                 Console.ReadKey();
+            }
+        }
+        public void SelectProduct(int userId)
+        {
+            Console.WriteLine();
+            int option = ConsoleUtils.GetIntFromUser("Välj 1 = Handla produkt, 2 = Se mer om produkt: ");
+            if (option == (int)ProductMenu.Handla_produkt)
+            {
+                int productId = ConsoleUtils.GetIntFromUser($"Ange produktid för produkten du vill köpa: ");
+                ShopProduct(productId, userId);
+
+            }
+            else if (option == (int)ProductMenu.Visa_mer_om_produkten)
+            {
+                int productId = ConsoleUtils.GetIntFromUser($"Ange produktid för att visa mer info: ");
+
+                ShowOneProduct(productId);
+            }
+            else
+            {
+                Console.WriteLine("Inget giltigt alternativ");
+                ConsoleUtils.WaitForKeyPress();
+            }
+        }
+        public void ShowOneProduct(int productId)
+        {
+            using (var db = new MyDbContext())
+            {
+                foreach (var product in db.Products.Where(x => x.Id == productId))
+                {
+                    Console.WriteLine($"{product.Name.PadRight(15)} {product.UnitPrice} {product.Description.PadRight(15)}");
+                }
             }
         }
         public void SearchProduct()
@@ -128,4 +165,5 @@ namespace Webbshoppen.Pages
         }
     }
 }
+
 
