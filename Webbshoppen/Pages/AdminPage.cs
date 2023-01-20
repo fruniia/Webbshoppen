@@ -182,7 +182,7 @@ namespace Webbshoppen.Pages
             product.ShowProducts();
             using (var db = new MyDbContext())
             {
-                var productId = ConsoleUtils.GetIntFromUser("Ange Id på produkten du vill ändra");
+                var productId = ConsoleUtils.GetIntFromUser("Ange Id på produkten du vill ändra: ");
                 var alterProduct = (from p in db.Products
                                     where p.Id == (productId)
                                     select p).SingleOrDefault();
